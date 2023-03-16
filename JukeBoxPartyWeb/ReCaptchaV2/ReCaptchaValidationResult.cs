@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Setup.ReCaptchaV2
+namespace JukeBoxPartyWeb.ReCaptchaV2
 {
     public class ReCaptchaValidationResult
     {
