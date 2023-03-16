@@ -1,5 +1,41 @@
-﻿#overview-songs {
+﻿.overview-song {
     display: flex;
     flex-flow: row;
     gap: 10%;
 }
+.overview{
+    text-align: center
+}
+.responsive {
+    height: auto;
+    width: 100%;
+    max-width: 150px;
+    min-width: 75px;
+}
+.overview-song-owner{
+    text-align:center;
+}
+
+#component {
+    display: flex;
+    flex-flow: row;
+    gap: 5%;
+}
+
+img {
+    height: auto;
+    width: 100%;
+}
+.overview-track_current {
+    min-width: 175px;
+}
+.overview-track_next {
+    min-width: 175px;
+}
+#tracklist li {
+    cursor: pointer;
+}
+
+    #tracklist li.selected {
+        background-color: yellow;
+    }

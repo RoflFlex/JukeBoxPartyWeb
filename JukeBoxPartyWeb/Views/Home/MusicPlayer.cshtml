@@ -4,17 +4,23 @@
 @{
 }
 <div>
-    <div id="overview">
-        <div id="overview-songs">
-            <div id="overview-songs-currenttrack">
+    <div class="overview">
+        <div class="overview-song">
+            <div class="overview-track_current">
                 <h3>The current track: </h3>
-                <p>trackname</p>
-            </div><div id="overview-songs-owner">
+                <p id="currenttrack">trackname</p>
+            </div>
+            <div class="overview-song-owner responsive">
+                <img src="~/media/gifs/cd.gif" class="track-image" style="height: auto;
+    width: 100%;" />
+                <audio autoplay id="audio">
+                    
+                </audio>
             </div>
 
-            <div id="overview-songs-nexttrack">
+            <div class="overview-track_current">
                 <h3>The next track:</h3>
-                <p>trackname</p>
+                <p id="nexttrack">trackname</p>
                 <button>
                     Queue
                 </button>
@@ -26,7 +32,25 @@
 
     </div>
     <div id="component">
+        <div class="tracks-query">
+            <h4>
+                Wachtrij
+            </h4>
+            <ul id="playlist">
+            </ul>
+        </div>
+        <div class="tracks-collection">
+            <h4>
+                Tracklist
+            </h4>
+            <ul id="tracklist">
+                
+            </ul>
+            <button id="select">Select</button>
+        </div>
+
     </div>
+
 </div>
 
-
+<script src="~/js/lobby.js"></script>
