@@ -61,6 +61,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapHub<ChatHub>("/chatHub");
+//app.MapHub<QueueHub>("/queueHub");
 
 app.MapControllerRoute(
     name: "default",

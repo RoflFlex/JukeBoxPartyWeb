@@ -55,7 +55,6 @@ img {
 #tracklist li {
     cursor: pointer;
 }
-
-    #tracklist li.selected {
-        background-color: yellow;
-    }
+.selected {
+    background-color: aqua;
+}
