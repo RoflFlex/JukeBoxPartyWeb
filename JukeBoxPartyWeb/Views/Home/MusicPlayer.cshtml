@@ -29,28 +29,43 @@
                 </button>
             </div>
         </div>
-
-    </div>
-    <div id="component">
-        <div class="tracks-query">
-            <h4>
-                Wachtrij
-            </h4>
-            <ul id="playlist">
-            </ul>
-        </div>
-        <div class="tracks-collection">
-            <h4>
-                Tracklist
-            </h4>
-            <ul id="tracklist">
+        <div class="overview-features">
+            <div class="tracks-query">
+                <h4>
+                    Wachtrij
+                </h4>
+                <ul id="playlist">
+                </ul>
+            </div>
+            <div class="tracks-collection">
+                <h4>
+                    Tracklist
+                </h4>
+                <ul id="tracklist">
                 
-            </ul>
-            <button id="select">Select</button>
+                </ul>
+                <button id="select">Select</button>
+            </div>
+            <div id="chatbox" class="overview-features-chatbox">
+                <h4>
+                    Chatbox:
+                </h4>
+                <ul id="messagesList"></ul>
+                <div class="chatbox-input">
+                    <div >Message</div>
+                        <div><input type="text" id="messageInput" /></div>
+                    </div>
+                <div>
+                    <div class="col-6 text-end">
+                        <input type="button" id="sendButton" value="Send Message" />
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
+
 
 </div>
-
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
 <script src="~/js/lobby.js"></script>

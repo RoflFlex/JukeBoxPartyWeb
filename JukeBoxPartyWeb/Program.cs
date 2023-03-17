@@ -1,9 +1,11 @@
 using JukeBoxPartyWeb.Data;
 using JukeBoxPartyWeb.Models;
 using JukeBoxPartyWeb.Services;
+using JukeBoxPartyWeb.SignalR.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,8 +28,9 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
 builder.Services.ConfigureApplicationCookie(o => {
     o.ExpireTimeSpan = TimeSpan.FromDays(5);
     o.SlidingExpiration = true;
-});     
+});
 
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -57,7 +60,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-
+app.MapHub<ChatHub>("/chatHub");
 
 app.MapControllerRoute(
     name: "default",

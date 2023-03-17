@@ -2,7 +2,6 @@
 const tracks_collection = ["track1.mp3", "track2.mp3", "track3.mp3"]
 
 
-
 function selectItem() {
     const list = document.getElementById("tracklist");
     const selected = list.querySelector("li.selected");

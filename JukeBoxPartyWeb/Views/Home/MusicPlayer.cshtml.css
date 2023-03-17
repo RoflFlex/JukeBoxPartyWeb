@@ -16,12 +16,21 @@
     text-align:center;
 }
 
-#component {
+.overview-features {
     display: flex;
     flex-flow: row;
     gap: 5%;
 }
 
+.tracks-query{
+    border-style:solid;
+    padding:5px;
+
+}
+.tracks-collection {
+    border-style: solid;
+    padding: 5px;
+}
 img {
     height: auto;
     width: 100%;
@@ -32,6 +41,17 @@ img {
 .overview-track_next {
     min-width: 175px;
 }
+
+.chatbox-input {
+    display: flex;
+    flex-flow: row;
+    gap: 3%;
+}
+.overview-features-chatbox{
+    border-style: solid;
+    padding: 5px;
+}
+
 #tracklist li {
     cursor: pointer;
 }
