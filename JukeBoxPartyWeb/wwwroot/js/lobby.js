@@ -3,6 +3,8 @@ let queue = [];
 let tracks_collection = [];
 let songs;
 
+//songs = await getTracks();
+
 var connection = new signalR.HubConnectionBuilder()
     .withUrl("/chatHub")
     .build();
@@ -37,10 +39,8 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     });
     event.preventDefault();
 });
-document.getElementById("addTrackBtn").addEventListener("click", function (event) {
-    songs = getTracks().then(function (users) {
-        return users;
-    });
+document.getElementById("addTrackBtn").addEventListener("click", async function (event) {
+    songs = await getTracks();
     console.log(songs);
     songs.forEach(e => tracks_collection.push(e['URL']));
     makeTracklist();
@@ -60,7 +60,10 @@ async function getTracks() {
 
 function onRecievedTrack(name, url) {
     console.log("track received");
-    queue.push(url);
+    queue.push({
+        name: name,
+        id: url,
+    });
     onSelectedTrack();
     document.getElementById("audio").play();
 }
@@ -72,7 +75,7 @@ function selectItem() {
         console.log("Selected Item: " + selected.innerText);
         //queue.push(selected.innerText);
 
-        connection.invoke("SendTrack", "LeukeNummer", selected.getAttribute("data-internalid")).then(() => {
+        connection.invoke("SendTrack", selected.innerText, selected.getAttribute("data-internalid")).then(() => {
             console.log("invoked");
 
         }).catch(function (err) {
@@ -98,8 +101,9 @@ function makePlaylist() {
     list.innerHTML = "";
     queue.forEach(track => {
         const li = document.createElement("li");
-        li.innerHTML = track;
+        li.innerHTML = track.name;
         list.appendChild(li);
+
     })
 }
 
@@ -108,7 +112,7 @@ function makeTracklist() {
     list.innerHTML = "";
     songs.forEach(track => {
         const li = document.createElement("li");
-        li.innerHTML = `${track.Artist} - ${track.Title}`;
+        li.innerHTML = `${track.artist} - ${track.title}`;
         li.setAttribute("data-internalid", track.id);
         list.appendChild(li);
     });
@@ -139,19 +143,19 @@ function selectTrack() {
 
 function setCurrentTrack() {
     if (queue[queue.length - 1]) {
-        document.getElementById("currenttrack").innerHTML = queue[queue.length - 1];
+        document.getElementById("currenttrack").innerHTML = queue[queue.length - 1].name;
     }
 }
 
 function getURL(id) {
-    const SONG = songs.find((element) => element.Id == id);
-    return SONG.URL;
+    const SONG = songs.find((element) => element.id == id);
+    return SONG.url;
 }
 
 function addTrackToAudio() {
     const audio = document.getElementById("audio");
     const source = document.createElement("source");
-    source.src = `/media/music/${queue[queue.length - 1]}`;
+    source.src = `/media/music/${getURL(queue[queue.length - 1].id)}`;
     source.type = "audio/mpeg";
     audio.appendChild(source);
 
