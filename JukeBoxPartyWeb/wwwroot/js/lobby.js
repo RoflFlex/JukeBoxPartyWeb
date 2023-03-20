@@ -1,6 +1,7 @@
 ﻿"use strict";
 let queue = [];
-const tracks_collection = ["track1.mp3", "track2.mp3", "track3.mp3"]
+let tracks_collection = [];
+let songs;
 
 var connection = new signalR.HubConnectionBuilder()
     .withUrl("/chatHub")
@@ -36,9 +37,26 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     });
     event.preventDefault();
 });
-
+document.getElementById("addTrackBtn").addEventListener("click", function (event) {
+    songs = getTracks().then(function (users) {
+        return users;
+    });
+    console.log(songs);
+    songs.forEach(e => tracks_collection.push(e['URL']));
+    makeTracklist();
+    event.preventDefault();
+})
 connection.on("ReceiveTrack", onRecievedTrack);
 
+
+async function getTracks() {
+    var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+    const tracks = await fetch("https://localhost:7283/api/Songs");
+    return await tracks.json();
+}
 
 function onRecievedTrack(name, url) {
     console.log("track received");
@@ -54,7 +72,7 @@ function selectItem() {
         console.log("Selected Item: " + selected.innerText);
         //queue.push(selected.innerText);
 
-        connection.invoke("SendTrack", "LeukeNummer", selected.innerText).then(() => {
+        connection.invoke("SendTrack", "LeukeNummer", selected.getAttribute("data-internalid")).then(() => {
             console.log("invoked");
 
         }).catch(function (err) {
@@ -88,9 +106,10 @@ function makePlaylist() {
 function makeTracklist() {
     const list = document.getElementById("tracklist");
     list.innerHTML = "";
-    tracks_collection.forEach(track => {
+    songs.forEach(track => {
         const li = document.createElement("li");
-        li.innerHTML = track;
+        li.innerHTML = `${track.Artist} - ${track.Title}`;
+        li.setAttribute("data-internalid", track.id);
         list.appendChild(li);
     });
     attachEventsTracklist();
@@ -122,6 +141,11 @@ function setCurrentTrack() {
     if (queue[queue.length - 1]) {
         document.getElementById("currenttrack").innerHTML = queue[queue.length - 1];
     }
+}
+
+function getURL(id) {
+    const SONG = songs.find((element) => element.Id == id);
+    return SONG.URL;
 }
 
 function addTrackToAudio() {

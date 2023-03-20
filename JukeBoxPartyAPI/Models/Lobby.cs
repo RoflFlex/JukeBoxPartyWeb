@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JukeBoxPartyAPI.Models
 {
@@ -11,6 +11,6 @@ namespace JukeBoxPartyAPI.Models
         [Required]
         public DateTime CreatedAt { get; set; }
         public DateTime SongChangedAt { get; set; }
-        public virtual ICollection<Song>? Songs { get; set; }
+        public bool IsActive { get; set; }
     }
 }

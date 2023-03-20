@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JukeBoxPartyAPI.Models
 {
@@ -16,7 +16,5 @@ namespace JukeBoxPartyAPI.Models
         public string URL { get; set; }
         [Required]
         public virtual Genre Genre { get; set; }
-        
-        public virtual ICollection<Song>? Songs { get; set; }
     }
 }
