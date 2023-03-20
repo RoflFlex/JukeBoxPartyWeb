@@ -70,7 +70,7 @@ internal class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=MusicPlayer}/{id?}");
+            pattern: "{controller=Song}/{action=Create}");
         app.MapRazorPages();
         using (var scope = app.Services.CreateScope())
         {

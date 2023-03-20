@@ -6,23 +6,14 @@ namespace JukeBoxPartyWeb.SignalR.Hubs
 {
     public class ChatHub : Hub
     {
-/*        public override Task OnConnectedAsync()
-        {
-            return base.OnConnectedAsync();
-        }
-
-        public override Task OnDisconnectedAsync(Exception? exception)
-        {
-            return base.OnDisconnectedAsync(exception);
-        }*/
-
-        //private static int _userCount = 0;
+        public Timer timer;
         public async Task SendMessage(string user, string message)
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
         public async Task SendTrack(string name, string url)
         {
+
             Debug.WriteLine($"sended{name}");
             await Clients.All.SendAsync("ReceiveTrack", name, url);
         }

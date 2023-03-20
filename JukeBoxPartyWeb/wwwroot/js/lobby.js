@@ -6,8 +6,14 @@ let songs;
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chatHub")
+    .withUrl("https://localhost:7283/chatHub")
     .build();
+
+connection.serverTimeoutInMilliseconds = 1000000;
+
+
+
+
 
 //Disable the send button until connection is established.
 document.getElementById("sendButton").disabled = true;
@@ -32,6 +38,19 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
+setInterval(function () {
+    if (queue.length > 0) {
+        connection.invoke("IsNextTrack").catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    }
+}, 1000);
+
+connection.on("IsNextTrack", function (boo) {
+    console.log(boo);
+    });
+
 document.getElementById("sendButton").addEventListener("click", function (event) {
     //var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
@@ -51,7 +70,9 @@ document.getElementById("addTrackBtn").addEventListener("click", async function 
     event.preventDefault();
 })
 connection.on("ReceiveTrack", onRecievedTrack);
-
+connection.on("TrackEnded", function () {
+    console.log("Sign that track is ended");
+})
 
 async function getTracks() {
     var requestOptions = {

@@ -10,7 +10,6 @@ namespace JukeBoxPartyAPI.Models
         public int Id { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
-        public DateTime SongChangedAt { get; set; }
         public bool IsActive { get; set; }
     }
 }
