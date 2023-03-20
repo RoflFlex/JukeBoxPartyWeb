@@ -27,6 +27,7 @@ connection.on("ReceiveMessage", function (user, message) {
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
     document.getElementById("select").disabled = false;
+    console.log("Connection started");
 }).catch(function (err) {
     return console.error(err.toString());
 });
@@ -39,6 +40,9 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     });
     event.preventDefault();
 });
+
+document.getElementById("audio").addEventListener("ended", onTrackEnded)
+
 document.getElementById("addTrackBtn").addEventListener("click", async function (event) {
     songs = await getTracks();
     console.log(songs);
@@ -90,9 +94,10 @@ function selectItem() {
 
 function onSelectedTrack() {
     makePlaylist();
-    setCurrentTrack();
-    setNextTrack();
-    addTrackToAudio();
+    if (queue.length == 1) setCurrentTrack();
+    if (queue.length == 2)    setNextTrack();
+    
+    
 }
 
 
@@ -141,9 +146,21 @@ function selectTrack() {
     item.classList.add("selected");
 }
 
+function onTrackEnded() {
+    queue.splice(0, 1);
+    if (queue[0]) {
+        setCurrentTrack();
+        setNextTrack();
+    }
+}
+
+
 function setCurrentTrack() {
-    if (queue[queue.length - 1]) {
-        document.getElementById("currenttrack").innerHTML = queue[queue.length - 1].name;
+    if (queue[0]) {
+        document.getElementById("currenttrack").innerHTML = queue[0].name;
+
+        addTrackToAudio();
+
     }
 }
 
@@ -155,7 +172,7 @@ function getURL(id) {
 function addTrackToAudio() {
     const audio = document.getElementById("audio");
     const source = document.createElement("source");
-    source.src = `/media/music/${getURL(queue[queue.length - 1].id)}`;
+    source.src = `/media/music/${getURL(queue[0].id)}`;
     source.type = "audio/mpeg";
     audio.appendChild(source);
 
@@ -163,7 +180,7 @@ function addTrackToAudio() {
 
 function setNextTrack() {
     if (queue[1]) {
-        document.getElementById("nexttrack").in = queue[1];
+        document.getElementById("nexttrack").innerHTML = queue[1].name;
     }
 }
 

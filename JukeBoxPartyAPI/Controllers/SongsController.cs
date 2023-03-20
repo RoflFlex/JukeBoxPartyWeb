@@ -50,8 +50,8 @@ namespace JukeBoxPartyAPI.Controllers
             return song;
         }
 
-        // GET: api/Songs/5
-        [HttpGet("{id}")]
+        // GET: api/Songs/Url/5
+        [HttpGet("Url/{id}")]
         public async Task<ActionResult<string>> GetURL(int id)
         {
             if (_context.Songs == null)

@@ -6,7 +6,7 @@ namespace JukeBoxPartyWeb.SignalR.Hubs
 {
     public class ChatHub : Hub
     {
-        public override Task OnConnectedAsync()
+/*        public override Task OnConnectedAsync()
         {
             return base.OnConnectedAsync();
         }
@@ -14,7 +14,7 @@ namespace JukeBoxPartyWeb.SignalR.Hubs
         public override Task OnDisconnectedAsync(Exception? exception)
         {
             return base.OnDisconnectedAsync(exception);
-        }
+        }*/
 
         //private static int _userCount = 0;
         public async Task SendMessage(string user, string message)

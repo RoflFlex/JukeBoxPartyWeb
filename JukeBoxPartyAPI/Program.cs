@@ -9,8 +9,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("https://localhost:7188",
-                                              "http://www.contoso.com"); // add the allowed origins  
+                          policy.WithOrigins("https://localhost:7188"); // add the allowed origins  
                       });
 });
 
