@@ -102,12 +102,22 @@ namespace JukeBoxPartyAPI.Controllers
         // POST: api/Songs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Song>> PostSong(Song song)
+        public async Task<ActionResult<Song>> PostSong(PostSong postSong)
         {
           if (_context.Songs == null)
           {
               return Problem("Entity set 'MyDbContext.Songs'  is null.");
           }
+            Genre? genre = await _context.Genres.FindAsync(postSong.Genre);
+            if(genre == null)
+            {
+                genre = _context.Genres.Last();
+            }
+            Song song = new Song(){
+                Title = postSong.Title,
+                Artist = postSong.Artist,
+                URL = postSong.URL,
+                Genre = genre };
             _context.Songs.Add(song);
             await _context.SaveChangesAsync();
 

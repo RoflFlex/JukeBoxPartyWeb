@@ -6,7 +6,7 @@ let songs;
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://localhost:7283/chatHub")
+    .withUrl("/chatHub")
     .build();
 
 connection.serverTimeoutInMilliseconds = 1000000;

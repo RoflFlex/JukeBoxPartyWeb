@@ -5,6 +5,7 @@ namespace JukeBoxPartyAPI.Models
 {
     public class Song
     {
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
