@@ -7,12 +7,12 @@ namespace JukeBoxPartyWeb.Controllers
 {
     public class APICaller
     {
-        private const string _url = "https://localhost:7283";
+        private const string _url = "https://localhost:7283/api";
 
         public async static Task<List<Genre>> GetGenres()
         {
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{_url}/api/Genres");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_url}/Genres");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadAsStringAsync();
@@ -24,7 +24,7 @@ namespace JukeBoxPartyWeb.Controllers
         public async static Task PostSong(Song song) 
         {
             var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}/api/Songs");
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}/Songs");
             var values = new Dictionary<string, string>()
                  {
                      {"title", song.Title},
