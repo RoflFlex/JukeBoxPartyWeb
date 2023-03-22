@@ -7,7 +7,7 @@ namespace JukeBoxPartyAPI.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
         public bool IsActive { get; set; }

@@ -41,11 +41,9 @@ namespace JukeBoxPartyAPI.Migrations
 
             modelBuilder.Entity("JukeBoxPartyAPI.Models.Lobby", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -69,8 +67,8 @@ namespace JukeBoxPartyAPI.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LobbyId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("LobbyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("PlayedAt")
                         .HasColumnType("datetime2");

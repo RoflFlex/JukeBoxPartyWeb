@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JukeBoxPartyAPI.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230319162014_AddRelationshipLobbySong")]
-    partial class AddRelationshipLobbySong
+    [Migration("20230322203345_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,20 +44,15 @@ namespace JukeBoxPartyAPI.Migrations
 
             modelBuilder.Entity("JukeBoxPartyAPI.Models.Lobby", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime>("SongChangedAt")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -75,8 +70,11 @@ namespace JukeBoxPartyAPI.Migrations
                     b.Property<DateTime>("AddedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LobbyId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("LobbyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("PlayedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("SongId")
                         .HasColumnType("int");
@@ -102,10 +100,10 @@ namespace JukeBoxPartyAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
+                    b.Property<double>("Duration")
+                        .HasColumnType("float");
 
-                    b.Property<int?>("SongId")
+                    b.Property<int>("GenreId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -119,8 +117,6 @@ namespace JukeBoxPartyAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GenreId");
-
-                    b.HasIndex("SongId");
 
                     b.ToTable("Songs");
                 });
@@ -147,26 +143,12 @@ namespace JukeBoxPartyAPI.Migrations
             modelBuilder.Entity("JukeBoxPartyAPI.Models.Song", b =>
                 {
                     b.HasOne("JukeBoxPartyAPI.Models.Genre", "Genre")
-                        .WithMany("Songs")
+                        .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("JukeBoxPartyAPI.Models.Song", null)
-                        .WithMany("Songs")
-                        .HasForeignKey("SongId");
-
                     b.Navigation("Genre");
-                });
-
-            modelBuilder.Entity("JukeBoxPartyAPI.Models.Genre", b =>
-                {
-                    b.Navigation("Songs");
-                });
-
-            modelBuilder.Entity("JukeBoxPartyAPI.Models.Song", b =>
-                {
-                    b.Navigation("Songs");
                 });
 #pragma warning restore 612, 618
         }

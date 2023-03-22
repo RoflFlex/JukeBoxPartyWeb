@@ -53,7 +53,7 @@ namespace JukeBoxPartyAPI.Controllers
         // PUT: api/Lobbies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLobby(int id, Lobby lobby)
+        public async Task<IActionResult> PutLobby(Guid id, Lobby lobby)
         {
             if (id != lobby.Id)
             {
@@ -116,7 +116,7 @@ namespace JukeBoxPartyAPI.Controllers
             return NoContent();
         }
 
-        private bool LobbyExists(int id)
+        private bool LobbyExists(Guid id)
         {
             return (_context.Lobbies?.Any(e => e.Id == id)).GetValueOrDefault();
         }
