@@ -18,9 +18,11 @@ internal class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+        builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddRoles<ApplicationRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultUI()
+            .AddDefaultTokenProviders(); ;
         builder.Services.AddControllersWithViews();
 
         builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -74,25 +76,31 @@ internal class Program
         app.MapRazorPages();
         using (var scope = app.Services.CreateScope())
         {
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
             var roles = new[] { "Admin", "AccountManager", "SongManager", "User" };
             foreach (var role in roles)
             {
                 if (!await roleManager.RoleExistsAsync(role))
                 {
-                    await roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(new ApplicationRole()
+                    {
+                        Name = role,
+                        ImageUrl = "user.png"
+                    });
                 }
             }
 
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             string email = "admin@admin.com";
             string password = "Test1234!";
 
             if(await userManager.FindByEmailAsync(email) == null){
-                var user = new IdentityUser();
+                var user = new ApplicationUser();
                 user.UserName = email;
                 user.Email = email;
                 user.EmailConfirmed = true;
+                user.Firstname = "admin";
+                user.Surname = "admin";
                 await userManager.CreateAsync(user,password);
             }
         }
