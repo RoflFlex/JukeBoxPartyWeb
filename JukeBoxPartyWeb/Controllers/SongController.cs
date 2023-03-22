@@ -66,7 +66,7 @@ namespace JukeBoxPartyWeb.Controllers
 
             }
             // to do  : Return something
-            return RedirectToAction("Create");
+            return View("Create", null);
         }
         private string GetUniqueFileName(string fileName)
         {

@@ -33,8 +33,13 @@
                 <span asp-validation-for="Track" class="text-danger" ></span>
             </div>
             <div class="form-group">
+                <label asp-for="Duration" class="control-label">Duration:</label>
+                <input asp-for="Duration" type="number" disabled id="duration" />
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+<script src="~/js/upload_song.js"></script>
