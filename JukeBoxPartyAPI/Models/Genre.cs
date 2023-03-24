@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.Hosting;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JukeBoxPartyAPI.Models
@@ -10,5 +11,6 @@ namespace JukeBoxPartyAPI.Models
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
+        public List<Song>? Songs { get; } = new();
     }
 }

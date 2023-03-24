@@ -17,31 +17,35 @@ namespace JukeBoxPartyAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Genre>().HasData(
-                new Genre { Title = "Pop" },
-                new Genre { Title = "Rock" },
-                new Genre { Title = "Hip-hop" },
-                new Genre { Title = "Rap" },
-                new Genre { Title = "Country" },
-                new Genre { Title = "R&B" },
-                new Genre { Title = "Soul" },
-                new Genre { Title = "Electronic" },
-                new Genre { Title = "Dance" },
-                new Genre { Title = "Jazz" },
-                new Genre { Title = "Blues" },
-                new Genre { Title = "Classical" },
-                new Genre { Title = "Reggae" },
-                new Genre { Title = "Punk" },
-                new Genre { Title = "Metal" },
-                new Genre { Title = "Folk" },
-                new Genre { Title = "World Music" },
-                new Genre { Title = "Funk" },
-                new Genre { Title = "Gospel" },
-                new Genre { Title = "Alternative" },
-                new Genre { Title = "Indie" },
-                new Genre { Title = "Latin" },
-                new Genre { Title = "Opera" }
+                new Genre { Id = 1,Title = "Pop" },
+                new Genre { Id = 2, Title = "Rock" },
+                new Genre { Id = 3, Title = "Hip-hop" },
+                new Genre { Id = 4, Title = "Rap" },
+                new Genre { Id = 5, Title = "Country" },
+                new Genre {Id = 6, Title = "R&B" },
+                new Genre {Id = 7, Title = "Soul" },
+                new Genre {Id = 8, Title = "Electronic" },
+                new Genre {Id = 9, Title = "Dance" },
+                new Genre {Id = 10, Title = "Jazz" },
+                new Genre {Id = 11, Title = "Blues" },
+                new Genre {Id = 12, Title = "Classical" },
+                new Genre {Id = 13, Title = "Reggae" },
+                new Genre {Id = 14, Title = "Punk" },
+                new Genre {Id = 15, Title = "Metal" },
+                new Genre {Id = 16, Title = "Folk" },
+                new Genre {Id = 17, Title = "World Music" },
+                new Genre {Id = 18, Title = "Funk" },
+                new Genre {Id = 19, Title = "Gospel" },
+                new Genre {Id = 20, Title = "Alternative" },
+                new Genre { Id = 21, Title = "Indie" },
+                new Genre { Id = 22, Title = "Latin" },
+                new Genre { Id = 23, Title = "Opera" }
                 );
-
+            modelBuilder.Entity<Song>().HasData(
+                new Song { Id = 1, Title = "Sunset Walk", Artist = "Roa", Duration = 156000, GenreId = 17, URL = "track1.mp3" },
+                new Song { Id = 2, Title = "Sunset Walk", Artist = "Roa", Duration = 156000, GenreId = 17, URL = "track2.mp3" },
+                new Song { Id = 3, Title = "Sunset Walk", Artist = "Roa", Duration = 156000, GenreId = 17, URL = "track3.mp3" }
+                );
         }
     }
 }

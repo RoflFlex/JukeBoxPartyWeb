@@ -18,11 +18,11 @@ internal class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultUI()
-            .AddDefaultTokenProviders(); ;
+            .AddDefaultTokenProviders(); 
         builder.Services.AddControllersWithViews();
 
         builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -96,14 +96,27 @@ internal class Program
 
             if(await userManager.FindByEmailAsync(email) == null){
                 var user = new ApplicationUser();
+                user.NickName = "Admin";
                 user.UserName = email;
                 user.Email = email;
                 user.EmailConfirmed = true;
-                user.Firstname = "admin";
-                user.Surname = "admin";
-                await userManager.CreateAsync(user,password);
+               
+                
+               /* user.Firstname = "admin";
+                user.Surname = "admin";*/
+                var result = await userManager.CreateAsync(user,password);
+                if (result.Succeeded)
+                {
+                    var adminRole = roleManager.FindByNameAsync("Admin").Result;
+
+                    if (adminRole != null)
+                    {
+                        IdentityResult roleresult = await userManager.AddToRoleAsync(user, adminRole.Name);
+                    }
+                }
+
+                }
             }
-        }
 
 
         app.Run();

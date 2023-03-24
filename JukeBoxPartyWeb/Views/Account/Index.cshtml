@@ -1,0 +1,84 @@
+﻿@model IEnumerable<JukeBoxPartyWeb.Models.Account>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.NickName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.EmailConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.PhoneNumberConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.TwoFactorEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.AccessFailedCount)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="~/media/images/@item.Role.ImageUrl" >
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.NickName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.EmailConfirmed)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.PhoneNumberConfirmed)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.TwoFactorEnabled)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.AccessFailedCount)
+                </td>
+                
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.User.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.User.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.User.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,12 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser>   userManager
+@inject RoleManager<ApplicationRole> roleManager
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
-{
+    {
+        ApplicationUser applicationUser = (ApplicationUser)await userManager.GetUserAsync(User);
+        
+        var roleId = (await userManager.GetRolesAsync(applicationUser)).First();
+        var roleIMG = roleManager.Roles.FirstOrDefault(role => role.Name == roleId).ImageUrl;
+
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+            <a asp-area="Identity" asp-page="/Account/Manage/Index"> 
+            <img src="~/media/images/@roleIMG" >
+            </a>
+    </li>
+    <li class="nav-item">
+        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @applicationUser.NickName!</a>
     </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
