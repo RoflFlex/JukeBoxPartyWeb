@@ -4,6 +4,7 @@ using JukeBoxPartyAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JukeBoxPartyAPI.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230326163520_DataSeedingLobbies")]
+    partial class DataSeedingLobbies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,20 +178,20 @@ namespace JukeBoxPartyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("074950e4-7108-45bb-8144-cd6c60e7bc26"),
-                            CreatedAt = new DateTime(2023, 3, 26, 20, 26, 44, 856, DateTimeKind.Local).AddTicks(148),
+                            Id = new Guid("1262efd4-eec6-4523-a442-5837b6bb6460"),
+                            CreatedAt = new DateTime(2023, 3, 26, 18, 35, 20, 354, DateTimeKind.Local).AddTicks(5380),
                             IsActive = true
                         },
                         new
                         {
-                            Id = new Guid("7de18949-4e72-4967-ba3a-8f6d885f2ff7"),
-                            CreatedAt = new DateTime(2023, 3, 26, 20, 26, 44, 856, DateTimeKind.Local).AddTicks(208),
+                            Id = new Guid("3773c5d4-9094-4fcb-aff1-d9650ab1aab9"),
+                            CreatedAt = new DateTime(2023, 3, 26, 18, 35, 20, 354, DateTimeKind.Local).AddTicks(5436),
                             IsActive = true
                         },
                         new
                         {
-                            Id = new Guid("c6614c17-9455-4124-922c-ddcac7e0d8b4"),
-                            CreatedAt = new DateTime(2023, 3, 26, 20, 26, 44, 856, DateTimeKind.Local).AddTicks(211),
+                            Id = new Guid("1d3739d5-f607-4376-afe1-57c6f14f3636"),
+                            CreatedAt = new DateTime(2023, 3, 26, 18, 35, 20, 354, DateTimeKind.Local).AddTicks(5439),
                             IsActive = true
                         });
                 });

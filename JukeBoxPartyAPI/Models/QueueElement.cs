@@ -11,6 +11,8 @@ namespace JukeBoxPartyAPI.Models
         public int Id { get; set; }
         public DateTime AddedAt { get; set; }
         public DateTime? PlayedAt { get; set; }
+        public Guid LobbyId { get; set; }
+        public int SongId { get; set; }
         public virtual Lobby Lobby { get; set; }
         public virtual Song Song { get; set; }
 

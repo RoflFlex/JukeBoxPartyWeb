@@ -1,5 +1,7 @@
 ﻿"use strict";
-
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const roomName = urlParams.get('id');
 var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
 //Disable the send button until connection is established.

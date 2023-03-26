@@ -8,9 +8,19 @@ namespace JukeBoxPartyWeb.SignalR.Hubs
     public class ChatHub : Hub
     {
         public System.Timers.Timer timer = new System.Timers.Timer(10000);
-        public async Task SendMessage(string user, string message)
+        public async Task JoinRoom(string roomName)
         {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+            await Clients.Group(roomName).SendAsync("JoinedRoom",Context.User.Identity.Name + " joined.");
+        }
+        public async Task LeaveRoom(string roomName)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+            await Clients.Group(roomName).SendAsync("LeftRoom", Context.User.Identity.Name + " left.");
+        }
+        public async Task SendMessage(string roomName, string user, string message)
+        {
+            await Clients.Group(roomName).SendAsync("ReceiveMessage", user, message);
         }
         public async Task SendTrack(string name, string url)
         {

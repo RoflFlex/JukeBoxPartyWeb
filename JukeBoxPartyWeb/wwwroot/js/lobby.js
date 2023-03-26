@@ -2,7 +2,9 @@
 let queue = [];
 let tracks_collection = [];
 let songs;
-
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const roomName = urlParams.get('id');
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
@@ -21,19 +23,30 @@ document.getElementById("sendButton").disabled = true;
 document.getElementById("select").disabled = true;
 
 connection.on("ReceiveMessage", function (user, message) {
-    var li = document.createElement("li");
-    document.getElementById("messagesList").appendChild(li);
-    // We can assign user-supplied strings to an element's textContent because it
-    // is not interpreted as markup. If you're assigning in any other way, you 
-    // should be aware of possible script injection concerns.
-    li.textContent = `${user} says ${message}`;
+
+    addToChatbox(`${user} says ${message}`);
+});
+connection.on("JoinedRoom", function (message) {
+    addToChatbox(`${message}`);
+});
+connection.on("LeftRoom", function ( message) {
+    addToChatbox(`${message}`);
 });
 
 
+
+window.onbeforeunload = () => {
+    connection.invoke("LeaveRoom", roomName).catch(function (err) {
+        return console.error(err.toString());
+    });
+};
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
     document.getElementById("select").disabled = false;
     console.log("Connection started");
+    connection.invoke("JoinRoom", roomName).catch(function (err) {
+        return console.error(err.toString());
+    });
 }).catch(function (err) {
     return console.error(err.toString());
 });
@@ -54,7 +67,7 @@ connection.on("IsNextTrack", function (boo) {
 document.getElementById("sendButton").addEventListener("click", function (event) {
     //var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessage", "Someone", message).catch(function (err) {
+    connection.invoke("SendMessage", roomName,"Someone", message).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
@@ -91,6 +104,16 @@ function onRecievedTrack(name, url) {
     });
     onSelectedTrack();
     document.getElementById("audio").play();
+}
+
+function addToChatbox(message) {
+    var li = document.createElement("li");
+    document.getElementById("messagesList").appendChild(li);
+
+    // We can assign user-supplied strings to an element's textContent because it
+    // is not interpreted as markup. If you're assigning in any other way, you 
+    // should be aware of possible script injection concerns.
+    li.textContent = `${message}`;
 }
 
 function selectItem() {

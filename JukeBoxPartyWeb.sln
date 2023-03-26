@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JukeBoxPartyWeb", "JukeBoxP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JukeBoxPartyAPI", "JukeBoxPartyAPI\JukeBoxPartyAPI.csproj", "{BCB8365C-A6DC-4DD2-B4A8-90B781B9171A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{B99C4D16-D689-402C-AD89-2BDF31C73204}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\TestProject.csproj", "{B99C4D16-D689-402C-AD89-2BDF31C73204}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

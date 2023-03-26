@@ -20,6 +20,17 @@ namespace JukeBoxPartyWeb.Controllers
             return ConvertJsonToList<Genre>(result);
 
         }
+        public async static Task<List<Lobby>> GetLobbies()
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{_url}/Lobbies");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadAsStringAsync();
+
+            return ConvertJsonToList<Lobby>(result);
+
+        }
 
         public async static Task PostSong(Song song) 
         {

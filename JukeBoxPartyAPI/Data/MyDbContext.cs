@@ -42,10 +42,27 @@ namespace JukeBoxPartyAPI.Data
                 new Genre { Id = 23, Title = "Opera" }
                 );
             modelBuilder.Entity<Song>().HasData(
-                new Song { Id = 1, Title = "Sunset Walk", Artist = "Roa", Duration = 156000, GenreId = 17, URL = "track1.mp3" },
+                new Song { Id = 1, Title = "Freedom", Artist = "Alex-Productions", Duration = 154000, GenreId = 17, URL = "track1.mp3" },
                 new Song { Id = 2, Title = "Sunset Walk", Artist = "Roa", Duration = 156000, GenreId = 17, URL = "track2.mp3" },
-                new Song { Id = 3, Title = "Sunset Walk", Artist = "Roa", Duration = 156000, GenreId = 17, URL = "track3.mp3" }
+                new Song { Id = 3, Title = "The Light", Artist = "LiQWYD", Duration = 135000, GenreId = 17, URL = "track3.mp3" }
                 );
+            modelBuilder.Entity<Lobby>().HasData(
+                new Lobby
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.Now,
+                    IsActive = true,
+                }, new Lobby
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.Now,
+                    IsActive = true,
+                }, new Lobby
+                {
+                    Id = Guid.NewGuid(),
+                    CreatedAt = DateTime.Now,
+                    IsActive = true,
+                });
         }
     }
 }
