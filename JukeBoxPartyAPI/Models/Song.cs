@@ -16,6 +16,7 @@ namespace JukeBoxPartyAPI.Models
         public double Duration { get; set; }
         [Required]
         public string URL { get; set; }
+        [ForeignKey("GenreId")]
         public int GenreId { get; set; }
         [Required]
         public virtual Genre Genre { get; set; }

@@ -1,9 +1,14 @@
 using JukeBoxPartyAPI.Data;
 using JukeBoxPartyAPI.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 // Add services to the container.
 builder.Services.AddCors(o => o.AddPolicy(name: MyAllowSpecificOrigins, policy => {
     policy
@@ -21,16 +26,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<MyDbContext>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<MyDbContext>(x => x.UseLazyLoadingProxies().UseSqlServer(connectionString));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    
 }
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

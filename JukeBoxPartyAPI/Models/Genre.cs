@@ -11,6 +11,6 @@ namespace JukeBoxPartyAPI.Models
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
-        public List<Song>? Songs { get; } = new();
+        //public virtual List<Song>? Songs { get; } = new();
     }
 }

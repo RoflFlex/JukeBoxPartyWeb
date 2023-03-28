@@ -98,6 +98,7 @@ namespace JukeBoxPartyAPI.Controllers
 
             return NoContent();
         }
+        
 
         // POST: api/Songs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -108,16 +109,18 @@ namespace JukeBoxPartyAPI.Controllers
           {
               return Problem("Entity set 'MyDbContext.Songs'  is null.");
           }
-            Genre? genre = await _context.Genres.FindAsync(postSong.Genre);
+            Genre? genre = _context.Genres.Where(x=>x.Id==postSong.Genre).FirstOrDefault();
             if(genre == null)
             {
-                genre = _context.Genres.Last();
+                genre = await _context.Genres.LastAsync();
             }
             Song song = new Song(){
                 Title = postSong.Title,
                 Artist = postSong.Artist,
                 URL = postSong.URL,
-                Genre = genre };
+                Genre = genre,
+                Duration = postSong.Duration
+            };
             _context.Songs.Add(song);
             await _context.SaveChangesAsync();
 

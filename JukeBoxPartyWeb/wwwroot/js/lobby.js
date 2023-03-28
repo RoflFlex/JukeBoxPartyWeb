@@ -1,19 +1,40 @@
 ﻿"use strict";
-let queue = [];
-let tracks_collection = [];
-let songs;
+let playlist = [];
+let tracklist;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const roomName = urlParams.get('id');
+const baseurl = "https://localhost:7283/api/";
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
     .withUrl("/chatHub")
     .build();
 
-connection.serverTimeoutInMilliseconds = 1000000;
 
+window.onload = async function () {
+    //console.log(document.getElementById("select"));
+    tracklist = await getTracks();
+    playlist = await getPlayList(roomName);
+    if (playlist.length > 0) {
+        
+        if (playlist[0].playedAt) {
+            
+            //let providedtime = 
+            let difference = (new Date()).getTime() - Date.parse(playlist[0].playedAt);
+            setTrackAudio(difference / 1000);
+        } else {
+            connection.invoke("SwitchTrack", roomName, playlist[0].id.toString()).catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
 
+    }
+    setDashboard();
+    makeTracklist();
+    makePlaylist();
+    document.getElementById("select").addEventListener("click", selectItem);
+}
 
 
 
@@ -47,18 +68,19 @@ connection.start().then(function () {
     connection.invoke("JoinRoom", roomName).catch(function (err) {
         return console.error(err.toString());
     });
-}).catch(function (err) {
-    return console.error(err.toString());
-});
-
-setInterval(function () {
-    if (queue.length > 0) {
+   /* setInterval(function () {
+        *//*   if (playlist.length > 0) {*//*
         connection.invoke("IsNextTrack").catch(function (err) {
             return console.error(err.toString());
         });
 
-    }
-}, 1000);
+        *//*}*//*
+    }, 1000);*/
+}).catch(function (err) {
+    return console.error(err.toString());
+});
+
+
 
 connection.on("IsNextTrack", function (boo) {
     console.log(boo);
@@ -76,32 +98,34 @@ document.getElementById("sendButton").addEventListener("click", function (event)
 document.getElementById("audio").addEventListener("ended", onTrackEnded)
 
 document.getElementById("addTrackBtn").addEventListener("click", async function (event) {
-    songs = await getTracks();
-    console.log(songs);
-    songs.forEach(e => tracks_collection.push(e['URL']));
+    tracklist = await getTracks();
+    console.log(tracklist);
+    //tracklist.forEach(e => playlist.push(e['URL']));
     makeTracklist();
     event.preventDefault();
 })
 connection.on("ReceiveTrack", onRecievedTrack);
-connection.on("TrackEnded", function () {
+connection.on("OnSwitchTrack",async function (id) {
+    playlist = await getPlayList(roomName);
+    setDashboard();
+    makeTracklist();
+    if (playlist[0]?.playedAt) {
+
+        if (playlist.find(x => x.id == id)) {
+            
+            setTrackAudio();
+            
+        }
+    }
     console.log("Sign that track is ended");
 })
 
-async function getTracks() {
-    var requestOptions = {
-        method: 'GET',
-        redirect: 'follow'
-    };
-    const tracks = await fetch("https://localhost:7283/api/Songs");
-    return await tracks.json();
-}
 
-function onRecievedTrack(name, url) {
+
+function onRecievedTrack(json) {
     console.log("track received");
-    queue.push({
-        name: name,
-        id: url,
-    });
+    playlist.push({ song: JSON.parse(json) });
+    console.log(playlist);
     onSelectedTrack();
     document.getElementById("audio").play();
 }
@@ -121,15 +145,16 @@ function selectItem() {
     const selected = list.querySelector("li.selected");
     if (selected) {
         console.log("Selected Item: " + selected.innerText);
-        //queue.push(selected.innerText);
-
-        connection.invoke("SendTrack", selected.innerText, selected.getAttribute("data-internalid")).then(() => {
+        //playlist.push(selected.innerText);
+        let json = tracklist.find(el => el.id == selected.getAttribute("data-internalid"));
+        connection.invoke("SendTrack", roomName, JSON.stringify(json)).then(() => {
             console.log("invoked");
 
         }).catch(function (err) {
             return console.error(err.toString());
         });
-        console.log(queue);
+
+        console.log(playlist);
         //onSelectedTrack();
     } else {
         console.log("Please select an item from the list.");
@@ -138,8 +163,7 @@ function selectItem() {
 
 function onSelectedTrack() {
     makePlaylist();
-    if (queue.length == 1) setCurrentTrack();
-    if (queue.length == 2)    setNextTrack();
+    setDashboard();
     
     
 }
@@ -148,18 +172,24 @@ function onSelectedTrack() {
 function makePlaylist() {
     const list = document.getElementById("playlist");
     list.innerHTML = "";
-    queue.forEach(track => {
+    playlist.forEach(track => {
         const li = document.createElement("li");
-        li.innerHTML = track.name;
+        li.innerHTML = track.song.artist + " - " + track.song.title;
         list.appendChild(li);
 
-    })
+    });
+}
+
+function setDashboard() {
+
+    setCurrentTrack();
+    setNextTrack();
 }
 
 function makeTracklist() {
     const list = document.getElementById("tracklist");
     list.innerHTML = "";
-    songs.forEach(track => {
+    tracklist.forEach(track => {
         const li = document.createElement("li");
         li.innerHTML = `${track.artist} - ${track.title}`;
         li.setAttribute("data-internalid", track.id);
@@ -191,45 +221,74 @@ function selectTrack() {
 }
 
 function onTrackEnded() {
-    queue.splice(0, 1);
-    if (queue[0]) {
-        setCurrentTrack();
-        setNextTrack();
-    }
+    if (playlist[1])
+        connection.invoke("SwitchTrack", roomName, playlist[1].id.toString()).catch(function (err) {
+        return console.error(err.toString());
+    });
 }
 
 
 function setCurrentTrack() {
-    if (queue[0]) {
-        document.getElementById("currenttrack").innerHTML = queue[0].name;
+    if (playlist.length >= 1) {
+        const track = playlist[0].song;
+        document.getElementById("currenttrack").innerHTML = `${track.artist} - ${track.title}`;
 
-        addTrackToAudio();
-
+    } else {
+        document.getElementById("currenttrack").innerHTML = `Not selected yet!`;
     }
 }
 
 function getURL(id) {
-    const SONG = songs.find((element) => element.id == id);
+    const SONG = tracklist.find((element) => element.id == id);
     return SONG.url;
 }
 
-function addTrackToAudio() {
+function setTrackAudio(currenttime = 0) {
     const audio = document.getElementById("audio");
     const source = document.createElement("source");
-    source.src = `/media/music/${getURL(queue[0].id)}`;
-    source.type = "audio/mpeg";
-    audio.appendChild(source);
+    if (currenttime != 0) 
+    audio.currentTime = Math.floor(currenttime); 
+    audio.src = `/media/music/${playlist[0].song.url}`;
+    audio.type = "audio/mpeg";
+    //audio.appendChild(source);
 
+}
+
+async function getPlayList(lobbyId) {
+
+
+    var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+
+    var response = await fetch(`${baseurl}QueueElements/Lobby/${lobbyId}`, requestOptions);
+    if (response.ok) {
+        return await response.json();
+    }
+    return null;
+}
+async function getTracks() {
+    var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+    const tracks = await fetch("https://localhost:7283/api/Songs");
+    return await tracks.json();
+}
+
+function OnChangeTrack() {
+    setDashboard();
+    makePlaylist();
 }
 
 function setNextTrack() {
-    if (queue[1]) {
-        document.getElementById("nexttrack").innerHTML = queue[1].name;
-    }
-}
+    if (playlist.length >= 2) {
+        const track = playlist[1];
+        document.getElementById("nexttrack").innerHTML = `${track.song.artist} - ${track.song.title}`;
 
-window.onload = function () {
-    //console.log(document.getElementById("select"));
-    document.getElementById("select").addEventListener("click", selectItem);
-    makeTracklist();
+    } else {
+        document.getElementById("nexttrack").innerHTML = `Not selected yet!`;
+    }
+
 }

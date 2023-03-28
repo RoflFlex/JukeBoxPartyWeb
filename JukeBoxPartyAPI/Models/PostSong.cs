@@ -8,5 +8,6 @@
         public string URL { get; set; }
 
         public int Genre { get; set; }
+        public double Duration { get; set; }
     }
 }

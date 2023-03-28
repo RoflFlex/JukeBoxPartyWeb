@@ -19,12 +19,29 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("Admin")|| User.IsInRole("User")) 
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Lobbies" asp-action="Index">Lobbies</a>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Admin") || User.IsInRole("AccountManager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Accounts</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin") || User.IsInRole("SongManager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Song" asp-action="Create">Add song to collection</a>
+                                </li>
+                            }
+                        }
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

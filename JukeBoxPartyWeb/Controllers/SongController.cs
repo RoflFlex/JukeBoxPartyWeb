@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Hosting.Internal;
 using System.Data;
+using System.IO;
 
 namespace JukeBoxPartyWeb.Controllers
 {
@@ -55,8 +56,22 @@ namespace JukeBoxPartyWeb.Controllers
 
                 //try
                 //{
+                model.Duration *= 1000;
+                try
+                {
                     await APICaller.PostSong(model);
-                    ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", model.Track.FileName);
+                    //ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", model.Track.FileName);
+                }
+                catch(HttpRequestException ex)
+                {
+                    FileInfo myfileinf = new FileInfo(filePath);
+                    if ((System.IO.File.Exists(uniqueFileName)))
+                    {
+                        System.IO.File.Delete(uniqueFileName);
+                    }
+                   // ViewBag.Message += ex.Message;
+                }
+                    
                // }
                // catch(Exception ex)
                 //{
@@ -66,7 +81,7 @@ namespace JukeBoxPartyWeb.Controllers
 
             }
             // to do  : Return something
-            return View("Create", null);
+            return RedirectToAction("Create");
         }
         private string GetUniqueFileName(string fileName)
         {

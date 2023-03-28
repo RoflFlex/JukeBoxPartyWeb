@@ -1,15 +1,42 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Threading;
 using System.Timers;
+using Timer = System.Timers.Timer;
+using JukeBoxPartyWeb.Controllers;
 
 namespace JukeBoxPartyWeb.SignalR.Hubs
 {
     public class ChatHub : Hub
     {
-        public System.Timers.Timer timer = new System.Timers.Timer(10000);
+        public System.Timers.Timer timer ;
+
+
+        public async Task SwitchTrack(string roomname, string id)
+        {
+            int intid = int.Parse(id);
+            await APICaller.MakeTrackPlayed(intid);
+            await Clients.Group(roomname).SendAsync("OnSwitchTrack", id);
+        }
+        public async Task ChangeTrack(string roomname, string id)
+        {
+            int intid = int.Parse(id);
+            await APICaller.MakeTrackPlayed(intid);
+            await Clients.Group(roomname).SendAsync("OnSwitchTrack", id);
+        }
+
         public async Task JoinRoom(string roomName)
         {
+            /*if (timer == null)
+            {
+                timer= new Timer(1000000);
+                timer.Elapsed += OnTimedEvent;
+                timer.Start();
+
+            }*/
             await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
             await Clients.Group(roomName).SendAsync("JoinedRoom",Context.User.Identity.Name + " joined.");
         }
@@ -22,7 +49,7 @@ namespace JukeBoxPartyWeb.SignalR.Hubs
         {
             await Clients.Group(roomName).SendAsync("ReceiveMessage", user, message);
         }
-        public async Task SendTrack(string name, string url)
+        public async Task SendTrack(string roomname, string json)
         {
             /*if(!timer.Enabled)
             {
@@ -32,61 +59,26 @@ namespace JukeBoxPartyWeb.SignalR.Hubs
                 timer.Start();
             }
 */
-            Debug.WriteLine($"sended{name}");
-            await Clients.All.SendAsync("ReceiveTrack", name, url);
+            var data = (JObject)JsonConvert.DeserializeObject(json);
+            var songid = data.SelectToken("id").Value<int>();
+            await APICaller.AddTrackToQueue(Guid.Parse(roomname), songid);
+            Debug.WriteLine($"sended{json}");
+            await Clients.Group(roomname).SendAsync("ReceiveTrack", json);
         }
-        private async void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            Console.WriteLine("The Elapsed event was raised at {0:HH:mm:ss.fff}",
-                              e.SignalTime);
-            timer.Dispose();
-            // await Clients.All.SendAsync("TrackEnded");
-        }
+
         public async Task OnTrackEnded()
         {
             await Clients.All.SendAsync("TrackEnded", "sdsdsd");
         }
 
-        public async Task IsNextTrack()
-        {
-            if (timer.Enabled)
-            {
-                await Clients.All.SendAsync("IsNextTrack", "false");
-            }
-            else
-            {
-                await Clients.All.SendAsync("IsNextTrack", "true");
-
-            }
-        }
+        
 
         public override Task OnConnectedAsync()
         {
-            if (!timer.Enabled)
-            {
-                timer.Elapsed += OnTimedEvent;
-                timer.Start();
-                Console.WriteLine("sdfsdfsdsds");
-            }
+           
 
             return base.OnConnectedAsync();
         }
-        /*  public override async Task OnConnected()
-          {
-              _userCount++;
-              await Clients.All.online(_userCount);
-          }
-          public override Task OnReconnected()
-          {
-              _userCount++;
-              var context = GlobalHost.ConnectionManager.GetHubContext<SampleHub>();
-              context.Clients.All.online(_userCount);
-          }
-          public override Task OnDisconnected(bool stopCalled)
-          {
-              _userCount--;
-              var context = GlobalHost.ConnectionManager.GetHubContext<SampleHub>();
-              context.Clients.All.online(_userCount);
-          }*/
+
     }
 }

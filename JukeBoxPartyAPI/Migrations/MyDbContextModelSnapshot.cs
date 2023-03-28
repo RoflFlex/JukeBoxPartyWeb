@@ -36,7 +36,7 @@ namespace JukeBoxPartyAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
 
                     b.HasData(
                         new
@@ -170,7 +170,7 @@ namespace JukeBoxPartyAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lobbies");
+                    b.ToTable("Lobbies", (string)null);
 
                     b.HasData(
                         new
@@ -219,7 +219,7 @@ namespace JukeBoxPartyAPI.Migrations
 
                     b.HasIndex("SongId");
 
-                    b.ToTable("QueueElements");
+                    b.ToTable("QueueElements", (string)null);
                 });
 
             modelBuilder.Entity("JukeBoxPartyAPI.Models.Song", b =>
@@ -252,7 +252,7 @@ namespace JukeBoxPartyAPI.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("Songs");
+                    b.ToTable("Songs", (string)null);
 
                     b.HasData(
                         new

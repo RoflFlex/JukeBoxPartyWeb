@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace JukeBoxPartyWeb.Controllers
 {
@@ -9,6 +10,42 @@ namespace JukeBoxPartyWeb.Controllers
     {
         private const string _url = "https://localhost:7283/api";
 
+        public async static Task MakeTrackPlayed(int queueId)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Put, $"{_url}/QueueElements/Play/{queueId}");
+            
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+
+        }
+        public async static Task AddTrackToQueue(Guid lobbyId, int songid)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}/QueueElements");
+            var values = new Dictionary<string, string>()
+                 {
+                     {"lobbyid", lobbyId.ToString()},
+                     {"songid", songid.ToString()},
+                 };
+            string bodystring = JsonConvert.SerializeObject(values);
+
+            var body = new StringContent(bodystring, null, "application/json");
+            request.Content = body;
+            var response = await client.SendAsync(request);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+
+            }
+            catch (HttpRequestException e)
+            {
+                Debug.WriteLine(e.Message);
+                throw;
+            }
+
+        }
         public async static Task<List<Genre>> GetGenres()
         {
             var client = new HttpClient();
@@ -41,9 +78,9 @@ namespace JukeBoxPartyWeb.Controllers
                      {"title", song.Title},
                      {"url", song.URL},
                      {"artist", song.Artist},
-                     {"duration", song.Duration.ToString()},
+                     {"duration", song.Duration.ToString(CultureInfo.InvariantCulture)},
                      {"genre", song.Genre}
-                 };
+                 }; 
             string bodystring = JsonConvert.SerializeObject(values);
             
             var body = new StringContent(bodystring  , null, "application/json");
