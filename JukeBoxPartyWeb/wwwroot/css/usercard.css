@@ -1,0 +1,18 @@
+﻿p {
+    font-size:15px;
+    margin: 0;
+}
+img {
+    width: 7vh;
+}
+div {
+    padding: 6px;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: aqua;
+    border-width: 3px;
+    margin-top: 3px;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-bottom: 3px;
+}

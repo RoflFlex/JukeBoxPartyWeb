@@ -27,3 +27,10 @@ body {
 #tracklist li.selected {
     background-color: aqua;
 }
+
+#usercards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+}

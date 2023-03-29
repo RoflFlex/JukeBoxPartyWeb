@@ -66,3 +66,10 @@ img {
 .selected {
     background-color: aqua;
 }
+
+#tracklist{
+    text-align:left
+}
+#messagesList{
+    text-align:left
+}

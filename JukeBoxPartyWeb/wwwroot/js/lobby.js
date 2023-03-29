@@ -1,6 +1,7 @@
 ﻿"use strict";
 let playlist = [];
 let tracklist;
+let users;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const roomName = urlParams.get('id');
@@ -15,8 +16,8 @@ var connection = new signalR.HubConnectionBuilder()
 window.onload = async function () {
     //console.log(document.getElementById("select"));
     tracklist = await getTracks();
-    playlist = await getPlayList(roomName);
-    if (playlist.length > 0) {
+    await updateDashboard();
+    if (playlist!=null && playlist.length > 0) {
         
         if (playlist[0].playedAt) {
             
@@ -30,9 +31,8 @@ window.onload = async function () {
         }
 
     }
-    setDashboard();
     makeTracklist();
-    makePlaylist();
+
     document.getElementById("select").addEventListener("click", selectItem);
 }
 
@@ -47,11 +47,15 @@ connection.on("ReceiveMessage", function (user, message) {
 
     addToChatbox(`${user} says ${message}`);
 });
-connection.on("JoinedRoom", function (message) {
+connection.on("JoinedRoom", async function (message, usercardsJson) {
     addToChatbox(`${message}`);
+    users = await JSON.parse(usercardsJson);
+    makeUserCards();
 });
-connection.on("LeftRoom", function ( message) {
+connection.on("LeftRoom", async function ( message, usercardsJson) {
     addToChatbox(`${message}`);
+    users = await JSON.parse(usercardsJson);
+    makeUserCards();
 });
 
 
@@ -68,23 +72,13 @@ connection.start().then(function () {
     connection.invoke("JoinRoom", roomName).catch(function (err) {
         return console.error(err.toString());
     });
-   /* setInterval(function () {
-        *//*   if (playlist.length > 0) {*//*
-        connection.invoke("IsNextTrack").catch(function (err) {
-            return console.error(err.toString());
-        });
 
-        *//*}*//*
-    }, 1000);*/
 }).catch(function (err) {
     return console.error(err.toString());
 });
 
 
 
-connection.on("IsNextTrack", function (boo) {
-    console.log(boo);
-    });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
     //var user = document.getElementById("userInput").value;
@@ -95,7 +89,7 @@ document.getElementById("sendButton").addEventListener("click", function (event)
     event.preventDefault();
 });
 
-document.getElementById("audio").addEventListener("ended", onTrackEnded)
+document.getElementById("audio").addEventListener("ended",  onTrackEnded);
 
 document.getElementById("addTrackBtn").addEventListener("click", async function (event) {
     tracklist = await getTracks();
@@ -105,10 +99,8 @@ document.getElementById("addTrackBtn").addEventListener("click", async function 
     event.preventDefault();
 })
 connection.on("ReceiveTrack", onRecievedTrack);
-connection.on("OnSwitchTrack",async function (id) {
-    playlist = await getPlayList(roomName);
-    setDashboard();
-    makeTracklist();
+connection.on("OnSwitchTrack", async function (id) {
+    await updateDashboard();
     if (playlist[0]?.playedAt) {
 
         if (playlist.find(x => x.id == id)) {
@@ -122,11 +114,18 @@ connection.on("OnSwitchTrack",async function (id) {
 
 
 
-function onRecievedTrack(json) {
+async function onRecievedTrack(json) {
     console.log("track received");
-    playlist.push({ song: JSON.parse(json) });
+    await updateDashboard();
+    const songjson = JSON.parse(json);
+    if (playlist[0].song.id == songjson.id) {
+        connection.invoke("SwitchTrack", roomName, playlist[0].id.toString()).catch(function (err) {
+            return console.error(err.toString());
+        });
+        //setTrackAudio();
+    }
     console.log(playlist);
-    onSelectedTrack();
+   
     document.getElementById("audio").play();
 }
 
@@ -161,17 +160,21 @@ function selectItem() {
     }
 }
 
-function onSelectedTrack() {
-    makePlaylist();
-    setDashboard();
-    
-    
+function makeUserCards() {
+    const usercards = document.getElementById("usercards");
+    usercards.innerHTML = "";
+    usercards.innerText = "";
+    console.log(users);
+    users.forEach(el => {
+        let iets = new Usercard(el.NickName, el.Url);
+        usercards.appendChild(iets);
+    })
 }
-
 
 function makePlaylist() {
     const list = document.getElementById("playlist");
     list.innerHTML = "";
+    if (playlist != null)
     playlist.forEach(track => {
         const li = document.createElement("li");
         li.innerHTML = track.song.artist + " - " + track.song.title;
@@ -220,16 +223,22 @@ function selectTrack() {
     item.classList.add("selected");
 }
 
-function onTrackEnded() {
+async function onTrackEnded() {
     if (playlist[1])
         connection.invoke("SwitchTrack", roomName, playlist[1].id.toString()).catch(function (err) {
         return console.error(err.toString());
-    });
+        });
+    await updateDashboard();
 }
 
+async function updateDashboard() {
+    playlist = await getPlayList(roomName);
+    makePlaylist();
+    setDashboard();
+}
 
 function setCurrentTrack() {
-    if (playlist.length >= 1) {
+    if (playlist != null && playlist.length >= 1) {
         const track = playlist[0].song;
         document.getElementById("currenttrack").innerHTML = `${track.artist} - ${track.title}`;
 
@@ -277,13 +286,9 @@ async function getTracks() {
     return await tracks.json();
 }
 
-function OnChangeTrack() {
-    setDashboard();
-    makePlaylist();
-}
 
 function setNextTrack() {
-    if (playlist.length >= 2) {
+    if (playlist != null && playlist.length >= 2) {
         const track = playlist[1];
         document.getElementById("nexttrack").innerHTML = `${track.song.artist} - ${track.song.title}`;
 
