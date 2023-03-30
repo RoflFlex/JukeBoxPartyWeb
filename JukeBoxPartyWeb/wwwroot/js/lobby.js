@@ -47,18 +47,23 @@ connection.on("ReceiveMessage", function (user, message) {
 
     addToChatbox(`${user} says ${message}`);
 });
-connection.on("JoinedRoom", async function (message, usercardsJson) {
-    addToChatbox(`${message}`);
-    users = await JSON.parse(usercardsJson);
-    makeUserCards();
-});
-connection.on("LeftRoom", async function ( message, usercardsJson) {
-    addToChatbox(`${message}`);
-    users = await JSON.parse(usercardsJson);
-    makeUserCards();
-});
+connection.on("JoinedRoom",  updateChat);
+connection.on("LeftRoom",  updateChat);
 
-
+async function updateChat(message, usercardsJson) {
+    try {
+        users = await JSON.parse(usercardsJson);
+    } catch (error) {
+        console.log(error.message);
+        //usercardsJson = `[${usercardsJson}]`
+        users = usercardsJson;
+    } finally {
+        addToChatbox(`${message}`);
+        makeUserCards();
+    }
+    
+    
+}
 
 window.onbeforeunload = () => {
     connection.invoke("LeaveRoom", roomName).catch(function (err) {
