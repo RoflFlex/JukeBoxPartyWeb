@@ -28,11 +28,15 @@
 .tracks-query {
     border-style: solid;
     padding: 5px;
+    height: 60vh;
+    width: 50%;
 }
 
 .tracks-collection {
     border-style: solid;
     padding: 5px;
+    height: 60vh;
+    width: 50%;
 }
 
 
@@ -47,12 +51,13 @@
 .chatbox-input {
     display: flex;
     flex-flow: row;
-    gap: 3%;
 }
 
 .overview-features-chatbox {
     border-style: solid;
     padding: 5px;
+    height: 60vh;
+    width: 30vw;
 }
 
 #tracklist li {
@@ -64,9 +69,26 @@
 }
 
 #tracklist {
-    text-align: left
+    text-align: left;
+    overflow-y: auto;
+    height: 80%;
 }
 
 #messagesList {
-    text-align: left
+    text-align: left;
+    overflow-y: auto;
+    height: 80%;
+    word-wrap: break-word;  
+}
+
+#playlist {
+    overflow-y: auto;
+    height: 90%;
+    text-align: left;
+}
+#usercards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 70%;
 }
