@@ -6,9 +6,9 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<span class="text-danger">
+    @ViewBag.ErrorMessage
+</span>
 <table class="table">
     <thead>
         <tr>
@@ -18,25 +18,28 @@
                 @Html.DisplayNameFor(model => model.User.NickName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Role.Name)
+                Role
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.LastAccessed)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.User.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.EmailConfirmed)
+                Confirmed email
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.User.PhoneNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.PhoneNumberConfirmed)
+                Confirmed phonenumber
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.TwoFactorEnabled)
+                Enabled Two-Factor Authentication
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User.AccessFailedCount)
+                AccessFailed count
             </th>
             <th></th>
         </tr>
@@ -53,6 +56,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Role.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.LastAccessed)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.User.Email)
@@ -74,9 +80,17 @@
                 </td>
                 
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.User.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.User.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.User.Id">Delete</a>
+                    @if ((User.IsInRole("AccountManager") && item.Role.Name != "Admin") && User.Identity.Name != item.User.UserName)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.User.Id">Edit</a>
+                    }
+                    
+                    @if (User.IsInRole("Admin") && User.Identity.Name != item.User.UserName )
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.User.Id">Edit</a>
+                        @:|
+                        <a asp-action="Delete" asp-route-id="@item.User.Id">Delete</a>
+                    }
                 </td>
             </tr>
         }

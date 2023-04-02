@@ -39,7 +39,7 @@ internal class Program
 
         builder.Services.AddSignalR();
         var app = builder.Build();
-
+        
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -47,10 +47,12 @@ internal class Program
         }
         else
         {
-            app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error");// /Home/Error
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+
+        app.UseStatusCodePages();
 
         app.UseHttpsRedirection();
         var cacheMaxAgeOneWeek = (60 * 60 * 24 * 7).ToString();
@@ -66,7 +68,23 @@ internal class Program
         app.UseRouting();
 
         app.UseAuthorization();
-
+        app.Use(async (context, next) => {
+            await next.Invoke();
+            //handle response
+            //you may also need to check the request path to check whether it requests image
+            if (context.User.Identity.IsAuthenticated)
+            {
+                var userName = context.User.Identity.Name;
+                //retrieve uer by userName
+                using (var dbContext = context.RequestServices.GetRequiredService<ApplicationDbContext>())
+                {
+                    var user = dbContext.Users.Where(u => u.UserName == userName).FirstOrDefault();
+                    user.LastAccessed = DateTime.Now;
+                    dbContext.Update(user);
+                    dbContext.SaveChanges();
+                }
+            }
+        });
         app.MapHub<ChatHub>("/chatHub");
         //app.MapHub<QueueHub>("/queueHub");
 

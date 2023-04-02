@@ -9,11 +9,18 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.NickName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastAccessed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.NormalizedUserName)
@@ -62,6 +69,12 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.NickName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastAccessed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NormalizedUserName)

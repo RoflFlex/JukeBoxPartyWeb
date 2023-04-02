@@ -36,10 +36,16 @@
                 <label asp-for="Duration" class="control-label">Duration:</label>
                 <input asp-for="Duration" type="number" readonly id="duration" />
             </div>
+            <div class="g-recaptcha" data-sitekey="6LcSm4gkAAAAAP1jfx53jwRC9Uz5zJA07pt79ku0"></div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-<script src="~/js/upload_song.js"></script>
+
+@section Scripts {
+       <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script src="~/js/upload_song.js"></script>
+}
+

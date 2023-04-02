@@ -45,7 +45,7 @@ document.getElementById("select").disabled = true;
 
 connection.on("ReceiveMessage", function (user, message) {
 
-    addToChatbox(`${user} says ${message}`);
+    addToChatbox(`${user}: ${message}`);
 });
 connection.on("JoinedRoom",  updateChat);
 connection.on("LeftRoom",  updateChat);
@@ -88,7 +88,8 @@ connection.start().then(function () {
 document.getElementById("sendButton").addEventListener("click", function (event) {
     //var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessage", roomName,"Someone", message).catch(function (err) {
+    if (message)
+    connection.invoke("SendMessage", roomName, message).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();

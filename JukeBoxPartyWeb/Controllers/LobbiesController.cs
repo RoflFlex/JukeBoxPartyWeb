@@ -1,9 +1,11 @@
 ﻿using JukeBoxPartyWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JukeBoxPartyWeb.Controllers
 {
+    [Authorize]
     public class LobbiesController : Controller
     {
         // GET: LobbyController

@@ -1,0 +1,83 @@
+﻿@model JukeBoxPartyWeb.Models.Account
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>ApplicationUser</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-route-id="@Model.User.Id">
+            <img src="/media/images/@Model.Role.ImageUrl"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="User.Id" />
+            <div class="form-group">
+                <label asp-for="User.NickName" class="control-label"></label>
+                <input asp-for="User.NickName" class="form-control" />
+                <span asp-validation-for="User.NickName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.UserName" class="control-label"></label>
+                <input asp-for="User.UserName" class="form-control" />
+                <span asp-validation-for="User.UserName" class="text-danger"></span>
+            </div>
+<input type="hidden" asp-for="User.Id" />
+            <input type="hidden" asp-for="Role.ImageUrl" />
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="User.EmailConfirmed" /> @Html.DisplayNameFor(model => model.User.EmailConfirmed)
+                </label>
+            </div>
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.Role.Name,(IEnumerable<SelectListItem>)ViewBag.RoleList,  new { 
+                    
+                    @class = "form-control"} )
+            </div>
+                    
+            <div class="form-group">
+                <label asp-for="User.LastAccessed" class="control-label">@Html.DisplayNameFor(model => model.User.LastAccessed):</label>
+                <p>
+                    @Html.DisplayFor(modelItem => modelItem.User.LastAccessed)
+                </p>
+                
+            </div>
+            <div class="form-group">
+                <label asp-for="User.PhoneNumber" class="control-label"></label>
+                <input asp-for="User.PhoneNumber" class="form-control" />
+                <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="User.PhoneNumberConfirmed" /> @Html.DisplayNameFor(model => model.User.PhoneNumberConfirmed)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="User.TwoFactorEnabled" /> @Html.DisplayNameFor(model => model.User.TwoFactorEnabled)
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="User.AccessFailedCount" class="control-label">@Html.DisplayNameFor(modelItem => modelItem.User.AccessFailedCount):</label>
+                <p>
+                    @Html.DisplayFor(modelItem => modelItem.User.AccessFailedCount)
+                </p>
+            </div>
+            @ViewBag.Message
+
+            <span class="text-danger">
+                @ViewBag.ErrorMessage
+            </span>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

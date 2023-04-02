@@ -21,12 +21,11 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (User.Identity.IsAuthenticated)
                         {
-                            @if (User.IsInRole("Admin")|| User.IsInRole("User")) 
-                            {
+                            
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Lobbies" asp-action="Index">Lobbies</a>
                                 </li>
-                            }
+                            
 
                             @if (User.IsInRole("Admin") || User.IsInRole("AccountManager"))
                             {

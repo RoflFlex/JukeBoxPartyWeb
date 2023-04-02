@@ -3,6 +3,7 @@
 *@
 @{
 }
+<link href="~/css/lobby.css" rel="stylesheet" />
 <div>
     <div class="overview">
         <div class="overview-song">
@@ -36,8 +37,8 @@
                 <h4>
                     Wachtrij
                 </h4>
-                <ul id="playlist">
-                </ul>
+                <ol id="playlist">
+                </ol>
             </div>
             <div class="tracks-collection">
                 <h4>
@@ -52,16 +53,10 @@
                     Chatbox:
                 </h4>
                 <ul id="messagesList"></ul>
-                <div class="chatbox-input">
-                    <div>Message</div>
-                    <div><input type="text" id="messageInput" /></div>
-                </div>
-                <div>
-                    <div class="col-6 text-end">
-                        <input type="button" id="sendButton" value="Send Message" />
-                    </div>
-                </div>
-            </div>
+                 <form class ="chatbox-input">
+                    <input type="text" id="messageInput" />
+                    <input type="submit" id="sendButton" value="Send Message" />
+                 </form>
         </div>
     </div>
 

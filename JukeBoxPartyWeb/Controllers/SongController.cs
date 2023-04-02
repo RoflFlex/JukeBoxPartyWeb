@@ -1,4 +1,6 @@
 ﻿using JukeBoxPartyWeb.Models;
+using JukeBoxPartyWeb.ReCaptchaV2;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,6 +10,7 @@ using System.IO;
 
 namespace JukeBoxPartyWeb.Controllers
 {
+    [Authorize(Roles = "Admin, SongManager")]
     public class SongController : Controller
     {
         // GET: SongController
@@ -44,45 +47,60 @@ namespace JukeBoxPartyWeb.Controllers
             // var result = RedirectToAction("Index", "Home");
             // do other validations on your model as needed
             ViewBag.Message += model.ToString();
-            if (model.Track != null)
-            {
-                var uniqueFileName = GetUniqueFileName(model.Track.FileName);
-                var uploads = Path.Combine(hostingEnvironment.WebRootPath, "media/music");
-                var filePath = Path.Combine(uploads, uniqueFileName);
-                await model.Track.CopyToAsync(new FileStream(filePath, FileMode.Create));
-                model.URL = uniqueFileName;
-                //result = RedirectToAction("Privacy","Home");
-                //to do : Save uniqueFileName  to your db table   
 
-                //try
-                //{
-                model.Duration *= 1000;
-                try
+            string? captcha = Request.Form["g-Recaptcha-Response"];
+            var recaptchaResult = ReCaptchaValidator.IsValid(captcha);
+            if (recaptchaResult.Success)
+            {
+
+                if (model.Track != null)
                 {
-                    await APICaller.PostSong(model);
-                    //ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", model.Track.FileName);
-                }
-                catch(HttpRequestException ex)
-                {
-                    FileInfo myfileinf = new FileInfo(filePath);
-                    if ((System.IO.File.Exists(uniqueFileName)))
+                    var uniqueFileName = GetUniqueFileName(model.Track.FileName);
+                    var uploads = Path.Combine(hostingEnvironment.WebRootPath, "media/music");
+                    var filePath = Path.Combine(uploads, uniqueFileName);
+                    await model.Track.CopyToAsync(new FileStream(filePath, FileMode.Create));
+                    model.URL = uniqueFileName;
+                    //result = RedirectToAction("Privacy","Home");
+                    //to do : Save uniqueFileName  to your db table   
+
+                    //try
+                    //{
+                    model.Duration *= 1000;
+                    try
                     {
-                        System.IO.File.Delete(uniqueFileName);
+                        await APICaller.PostSong(model);
+                        //ViewBag.Message += string.Format("<b>{0}</b> uploaded.<br />", model.Track.FileName);
                     }
-                   // ViewBag.Message += ex.Message;
+                    catch (HttpRequestException ex)
+                    {
+                        FileInfo myfileinf = new FileInfo(filePath);
+                        if ((System.IO.File.Exists(uniqueFileName)))
+                        {
+                            System.IO.File.Delete(uniqueFileName);
+                        }
+                        // ViewBag.Message += ex.Message;
+                    }
                 }
-                    
-               // }
-               // catch(Exception ex)
+                foreach (var error in recaptchaResult.ErrorCodes)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+
+                // }
+                // catch(Exception ex)
                 //{
-                    //ViewBag.Message += string.Format("<b>{0}</b> not uploaded."+ex.Message+ "<br />", model.Track.FileName);
-               // }
-                
+                //ViewBag.Message += string.Format("<b>{0}</b> not uploaded."+ex.Message+ "<br />", model.Track.FileName);
+                // }
+
 
             }
             // to do  : Return something
-            return RedirectToAction("Create");
+            var list = await APICaller.GetGenres();
+
+            ViewBag.CategoryList = ToSelectList(list);
+            return View(model);
         }
+        [NonAction]
         private string GetUniqueFileName(string fileName)
         {
             fileName = Path.GetFileName(fileName);
