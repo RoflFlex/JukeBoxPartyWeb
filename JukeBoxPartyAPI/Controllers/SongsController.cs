@@ -109,6 +109,10 @@ namespace JukeBoxPartyAPI.Controllers
           {
               return Problem("Entity set 'MyDbContext.Songs'  is null.");
           }
+            if(!ModelState.IsValid)
+            {
+                return Problem("Model state is not valid!");
+            }
             Genre? genre = _context.Genres.Where(x=>x.Id==postSong.Genre).FirstOrDefault();
             if(genre == null)
             {
@@ -146,7 +150,7 @@ namespace JukeBoxPartyAPI.Controllers
 
             return NoContent();
         }
-
+        [NonAction]
         private bool SongExists(int id)
         {
             return (_context.Songs?.Any(e => e.Id == id)).GetValueOrDefault();
