@@ -19,11 +19,13 @@ namespace JukeBoxPartyWeb.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<ApplicationRole> roleManager;
-        public AccountController(ApplicationDbContext context, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
+        private readonly SignInManager<ApplicationUser> signInManager;
+        public AccountController(ApplicationDbContext context, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
 
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.signInManager = signInManager;
             _context = context;
         }
         // GET: AccountController
@@ -158,6 +160,7 @@ namespace JukeBoxPartyWeb.Controllers
                     }
 
                     await userManager.AddToRoleAsync(user, role.Name);
+                    await signInManager.RefreshSignInAsync(user);
 
                     foreach (PropertyInfo prop in user.GetType().GetProperties())
                     {
