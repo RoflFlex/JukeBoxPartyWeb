@@ -5,12 +5,7 @@ namespace JukeBoxPartyWeb.ReCaptchaV2
     public class ReCaptchaValidator
     {
         public static ReCaptchaValidationResult IsValid(string captchaResponse)
-        {/*
-            if (string.IsNullOrWhiteSpace(captchaResponse))
-            {
-                return new ReCaptchaValidationResult(){ Success = false };
-            }*/
-
+        {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri("https://www.google.com");
 

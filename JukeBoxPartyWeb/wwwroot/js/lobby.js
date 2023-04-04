@@ -88,10 +88,14 @@ connection.start().then(function () {
 document.getElementById("sendButton").addEventListener("click", function (event) {
     //var user = document.getElementById("userInput").value;
     var message = document.getElementById("messageInput").value;
-    if (message)
-    connection.invoke("SendMessage", roomName, message).catch(function (err) {
-        return console.error(err.toString());
-    });
+    if (message) {
+        message = removeCSS(message);
+        message = encodeUserInput(message);
+
+        connection.invoke("SendMessage", roomName, message).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
     event.preventDefault();
 });
 
@@ -302,4 +306,11 @@ function setNextTrack() {
         document.getElementById("nexttrack").innerHTML = `Not selected yet!`;
     }
 
+}
+function removeCSS(input) {
+    const regex = /<style([\s\S]*?)<\/style>|style\s*?=(['"])[\s\S]*?\2/gi;
+    return input.replace(regex, '');
+}
+function encodeUserInput(input) {
+    return encodeURIComponent(input);
 }

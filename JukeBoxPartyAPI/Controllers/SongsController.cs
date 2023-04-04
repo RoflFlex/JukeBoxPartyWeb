@@ -105,10 +105,10 @@ namespace JukeBoxPartyAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Song>> PostSong(PostSong postSong)
         {
-          if (_context.Songs == null)
-          {
-              return Problem("Entity set 'MyDbContext.Songs'  is null.");
-          }
+            if (_context.Songs == null)
+            {
+                return Problem("Entity set 'MyDbContext.Songs'  is null.");
+            }
             if(!ModelState.IsValid)
             {
                 return Problem("Model state is not valid!");

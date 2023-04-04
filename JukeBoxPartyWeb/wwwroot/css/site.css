@@ -2,7 +2,7 @@ html {
     font-size: 14px;
     overflow: hidden;
 }
-img{
+.icon{
     width: 20px;
 }
 
@@ -28,4 +28,7 @@ body {
 #tracklist li.selected {
     background-color: aqua;
 }
-
+.logo{
+    width: 512 px;
+    height: 512px;
+}
