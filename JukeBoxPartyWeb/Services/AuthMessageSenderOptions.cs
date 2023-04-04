@@ -2,6 +2,6 @@
 {
     public class AuthMessageSenderOptions
     {
-        public const string SendGridKey = "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";
+        public string? SendGridKey = "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";
     }
 }
