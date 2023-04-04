@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JukeBoxPartyWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230404153531_DataSeeding")]
-    partial class DataSeeding
+    [Migration("20230404183531_DataSeedRoles")]
+    partial class DataSeedRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,27 +59,31 @@ namespace JukeBoxPartyWeb.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e79ede60-41ca-49fa-a2db-e9d22933c563"),
+                            Id = new Guid("b3a0993e-d159-4162-b5bc-2de3df5459b0"),
                             ImageUrl = "admin.png",
-                            Name = "Admin"
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = new Guid("356ea5c6-cd9b-479b-840d-0342f13edc23"),
+                            Id = new Guid("bc0ac5b3-4270-4435-bfcc-c168b0edca3d"),
                             ImageUrl = "moderator.png",
-                            Name = "AccountManager"
+                            Name = "AccountManager",
+                            NormalizedName = "ACCOUNTMANAGER"
                         },
                         new
                         {
-                            Id = new Guid("6c553387-2fae-46b5-a498-54af0aca5b67"),
+                            Id = new Guid("7f043c9a-1fe9-4865-8d88-283a6400e5af"),
                             ImageUrl = "musicmanager.png",
-                            Name = "SongManager"
+                            Name = "SongManager",
+                            NormalizedName = "SONGMANAGER"
                         },
                         new
                         {
-                            Id = new Guid("a2164aec-30ac-491e-8b51-4fd535198479"),
+                            Id = new Guid("12c2bda6-b76c-4b9b-959b-4a266071c345"),
                             ImageUrl = "user.png",
-                            Name = "User"
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 

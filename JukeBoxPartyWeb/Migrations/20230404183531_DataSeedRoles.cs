@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JukeBoxPartyWeb.Migrations
 {
     /// <inheritdoc />
-    public partial class DataSeeding : Migration
+    public partial class DataSeedRoles : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,10 +18,10 @@ namespace JukeBoxPartyWeb.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "ImageUrl", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("356ea5c6-cd9b-479b-840d-0342f13edc23"), null, "moderator.png", "AccountManager", null },
-                    { new Guid("6c553387-2fae-46b5-a498-54af0aca5b67"), null, "musicmanager.png", "SongManager", null },
-                    { new Guid("a2164aec-30ac-491e-8b51-4fd535198479"), null, "user.png", "User", null },
-                    { new Guid("e79ede60-41ca-49fa-a2db-e9d22933c563"), null, "admin.png", "Admin", null }
+                    { new Guid("12c2bda6-b76c-4b9b-959b-4a266071c345"), null, "user.png", "User", "USER" },
+                    { new Guid("7f043c9a-1fe9-4865-8d88-283a6400e5af"), null, "musicmanager.png", "SongManager", "SONGMANAGER" },
+                    { new Guid("b3a0993e-d159-4162-b5bc-2de3df5459b0"), null, "admin.png", "Admin", "ADMIN" },
+                    { new Guid("bc0ac5b3-4270-4435-bfcc-c168b0edca3d"), null, "moderator.png", "AccountManager", "ACCOUNTMANAGER" }
                 });
         }
 
@@ -31,22 +31,22 @@ namespace JukeBoxPartyWeb.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: new Guid("356ea5c6-cd9b-479b-840d-0342f13edc23"));
+                keyValue: new Guid("12c2bda6-b76c-4b9b-959b-4a266071c345"));
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: new Guid("6c553387-2fae-46b5-a498-54af0aca5b67"));
+                keyValue: new Guid("7f043c9a-1fe9-4865-8d88-283a6400e5af"));
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: new Guid("a2164aec-30ac-491e-8b51-4fd535198479"));
+                keyValue: new Guid("b3a0993e-d159-4162-b5bc-2de3df5459b0"));
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: new Guid("e79ede60-41ca-49fa-a2db-e9d22933c563"));
+                keyValue: new Guid("bc0ac5b3-4270-4435-bfcc-c168b0edca3d"));
         }
     }
 }

@@ -26,24 +26,28 @@ namespace JukeBoxPartyWeb.Data
                     Id = Guid.NewGuid(),
                     Name = "Admin",
                     ImageUrl = "admin.png",
+                    NormalizedName = "ADMIN"
                 },
                  new ApplicationRole()
                  {
                      Id = Guid.NewGuid(),
                      Name = "AccountManager",
                      ImageUrl = "moderator.png",
+                     NormalizedName = "ACCOUNTMANAGER"
                  },
                   new ApplicationRole()
                   {
                       Id = Guid.NewGuid(),
                       Name = "SongManager",
                       ImageUrl = "musicmanager.png",
+                      NormalizedName = "SONGMANAGER"
                   },
                    new ApplicationRole()
                    {
                        Id = Guid.NewGuid(),
                        Name = "User",
                        ImageUrl = "user.png",
+                       NormalizedName = "USER"
                    }
                 ) ;
         }
