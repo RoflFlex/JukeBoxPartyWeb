@@ -5,7 +5,7 @@ let users;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const roomName = urlParams.get('id');
-const baseurl = "https://localhost:7283/api/";
+const baseurl = "http://localhost:5003/api/";
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
@@ -292,7 +292,7 @@ async function getTracks() {
         method: 'GET',
         redirect: 'follow'
     };
-    const tracks = await fetch("https://localhost:7283/api/Songs");
+    const tracks = await fetch(`${baseurl}Songs`);
     return await tracks.json();
 }
 

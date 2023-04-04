@@ -94,18 +94,7 @@ internal class Program
         using (var scope = app.Services.CreateScope())
         {
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-            var roles = new[] { "Admin", "AccountManager", "SongManager", "User" };
-            foreach (var role in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(role))
-                {
-                    await roleManager.CreateAsync(new ApplicationRole()
-                    {
-                        Name = role,
-                        ImageUrl = "user.png"
-                    });
-                }
-            }
+            
 
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             string email = "admin@admin.com";
