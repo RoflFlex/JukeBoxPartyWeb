@@ -8,7 +8,7 @@ namespace JukeBoxPartyWeb.Controllers
 {
     public class APICaller
     {
-        private const string _url = "https://localhost:7283/api";
+        private const string _url = "http://localhost:5003/api";
 
         public async static Task MakeTrackPlayed(int queueId)
         {
