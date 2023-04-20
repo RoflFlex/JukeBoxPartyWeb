@@ -5,7 +5,7 @@ let users;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const roomName = urlParams.get('id');
-const baseurl = "http://localhost:5003/api/";
+const baseurl = "https://localhost:5004/api/";
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
@@ -109,6 +109,8 @@ document.getElementById("addTrackBtn").addEventListener("click", async function 
     event.preventDefault();
 })
 connection.on("ReceiveTrack", onRecievedTrack);
+connection.on("WaitingTrack", onWaiting);
+
 connection.on("OnSwitchTrack", async function (id) {
     await updateDashboard();
     if (playlist[0]?.playedAt) {
@@ -135,8 +137,14 @@ async function onRecievedTrack(json) {
         //setTrackAudio();
     }
     console.log(playlist);
-   
+
     document.getElementById("audio").play();
+}
+async function onWaiting(sec) {
+    sec = parseFloat(sec);
+    document.getElementById("seconds").innerHTML = `Please wait ${round(sec, 1) } seconds`;
+    console.log(`Please wait ${sec} before selecting a new track`);
+
 }
 
 function addToChatbox(message) {
@@ -156,6 +164,8 @@ function selectItem() {
         console.log("Selected Item: " + selected.innerText);
         //playlist.push(selected.innerText);
         let json = tracklist.find(el => el.id == selected.getAttribute("data-internalid"));
+
+        document.getElementById("seconds").innerHTML = '';
         connection.invoke("SendTrack", roomName, JSON.stringify(json)).then(() => {
             console.log("invoked");
 
@@ -313,4 +323,8 @@ function removeCSS(input) {
 }
 function encodeUserInput(input) {
     return encodeURIComponent(input);
+}
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
 }

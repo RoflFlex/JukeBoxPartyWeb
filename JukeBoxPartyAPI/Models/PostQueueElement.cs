@@ -9,6 +9,7 @@ namespace JukeBoxPartyAPI.Models
         [Required]
         public int SongId { get; set; }
         
+        public Guid UserId { get; set; }
         public int? Id { get; set; } 
     }
 }

@@ -10,6 +10,7 @@ namespace JukeBoxPartyAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime AddedAt { get; set; }
+        public Guid UserId { get; set; }
         public DateTime? PlayedAt { get; set; }
         [ForeignKey("LobbyId")]
         public Guid LobbyId { get; set; }

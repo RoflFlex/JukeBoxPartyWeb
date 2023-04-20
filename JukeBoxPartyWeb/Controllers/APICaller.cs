@@ -1,5 +1,6 @@
 ﻿using JukeBoxPartyWeb.Models;
 using Newtonsoft.Json;
+using NuGet.Protocol;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -20,7 +21,7 @@ namespace JukeBoxPartyWeb.Controllers
             Console.WriteLine(await response.Content.ReadAsStringAsync());
 
         }
-        public async static Task AddTrackToQueue(Guid lobbyId, int songid)
+        public async static Task<(HttpContent,bool)> AddTrackToQueue(Guid lobbyId, int songid, Guid userId)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, $"{_url}/QueueElements");
@@ -28,22 +29,15 @@ namespace JukeBoxPartyWeb.Controllers
                  {
                      {"lobbyid", lobbyId.ToString()},
                      {"songid", songid.ToString()},
+                     {"userId", userId.ToString()}
                  };
             string bodystring = JsonConvert.SerializeObject(values);
 
             var body = new StringContent(bodystring, null, "application/json");
             request.Content = body;
             var response = await client.SendAsync(request);
-            try
-            {
-                response.EnsureSuccessStatusCode();
+            return (response.Content,response.IsSuccessStatusCode);
 
-            }
-            catch (HttpRequestException e)
-            {
-                Debug.WriteLine(e.Message);
-                throw;
-            }
 
         }
         public async static Task<List<Genre>> GetGenres()

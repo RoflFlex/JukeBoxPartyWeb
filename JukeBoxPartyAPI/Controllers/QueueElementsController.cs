@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JukeBoxPartyAPI.Data;
 using JukeBoxPartyAPI.Models;
+using System.Net;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace JukeBoxPartyAPI.Controllers
 {
@@ -15,7 +18,7 @@ namespace JukeBoxPartyAPI.Controllers
     public class QueueElementsController : ControllerBase
     {
         private readonly MyDbContext _context;
-
+        private readonly double _interval = 90.0;
         public QueueElementsController(MyDbContext context)
         {
             _context = context;
@@ -141,10 +144,10 @@ namespace JukeBoxPartyAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<QueueElement>> PostQueueElement(PostQueueElement queueElement)
         {
-          if (_context.QueueElements == null)
-          {
-              return Problem("Entity set 'MyDbContext.QueueElements'  is null.");
-          }
+            if (_context.QueueElements == null)
+            {
+                return Problem("Entity set 'MyDbContext.QueueElements'  is null.");
+            }
             Song? song = await _context.Songs.FindAsync(queueElement.SongId);
             Lobby? lobby = await _context.Lobbies.FindAsync(queueElement.LobbyId);
             if (song == null || lobby == null)
@@ -152,19 +155,44 @@ namespace JukeBoxPartyAPI.Controllers
                 //song = await _context.Songs.LastAsync();
                 return BadRequest();
             }
+            
 
-            QueueElement element = new QueueElement()
-            {
-                AddedAt = DateTime.Now,
-                Lobby = lobby,
-                Song = song,
-                LobbyId = queueElement.LobbyId,
-                SongId = queueElement.SongId
-            };
-            _context.QueueElements.Add(element);
-            await _context.SaveChangesAsync();
+                var lastAddedQueueElement = _context.QueueElements.Where(q => q.UserId == queueElement.UserId).OrderBy(q => q.AddedAt).ToList().LastOrDefault();
 
-            return CreatedAtAction("GetQueueElement", new { id = element.Id }, element);
+            if (lastAddedQueueElement == null || GetDifferenceInSeconds(lastAddedQueueElement.AddedAt,DateTime.Now) >= _interval) 
+                {
+                    QueueElement element = new QueueElement()
+                    {
+                        AddedAt = DateTime.Now,
+                        Lobby = lobby,
+                        Song = song,
+                        UserId = queueElement.UserId,
+                        LobbyId = queueElement.LobbyId,
+                        SongId = queueElement.SongId
+                    };
+                    _context.QueueElements.Add(element);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetQueueElement", new { id = element.Id }, element);
+                }
+                else
+                {
+                /* var response = new HttpResponseMessage(HttpStatusCode.NotImplemented);
+                 var data = new { Seconds = GetDifferenceInSeconds(lastAddedQueueElement.AddedAt,DateTime.Now)};
+                 var json = JsonConvert.SerializeObject(data);
+                 response.Content = new StringContent(json, Encoding.UTF8, "application/json");*/
+                double difference = _interval - GetDifferenceInSeconds(lastAddedQueueElement.AddedAt, DateTime.Now);
+                    var problemDetails = new ProblemDetails
+                    {
+                        Status = 400,
+                        Title = "Invalid request",
+                        Detail = difference.ToString()
+                    };
+                    return BadRequest(problemDetails);
+                }
+            
+          
+           
         }
 
 
@@ -189,10 +217,18 @@ namespace JukeBoxPartyAPI.Controllers
 
             return NoContent();
         }
-
+        [NonAction]
         private bool QueueElementExists(int id)
         {
             return (_context.QueueElements?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        [NonAction]
+        public double GetDifferenceInSeconds(DateTime date1, DateTime date2)
+        {
+            TimeSpan difference = date2 - date1;
+            double seconds = difference.TotalSeconds;
+            return seconds;
+        }
+
     }
 }

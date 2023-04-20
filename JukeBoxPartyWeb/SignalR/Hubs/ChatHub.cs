@@ -15,6 +15,7 @@ using JukeBoxPartyWeb.Data;
 using Microsoft.CodeAnalysis.Elfie.Model.Tree;
 using SendGrid.Helpers.Mail;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JukeBoxPartyWeb.SignalR.Hubs
 {
@@ -91,9 +92,27 @@ namespace JukeBoxPartyWeb.SignalR.Hubs
         {
              var data = (JObject)JsonConvert.DeserializeObject(json);
             var songid = data.SelectToken("id").Value<int>();
-            await APICaller.AddTrackToQueue(Guid.Parse(roomname), songid);
+            var email = Context.User.Identity.Name;
+            var userId = (from b in dbContext.Users
+                                         where b.UserName == email
+                                         select b.Id).FirstOrDefault();
+            (HttpContent content, bool succeded) = await APICaller.AddTrackToQueue(Guid.Parse(roomname), songid, userId);
+            if (!succeded)
+            {
+                string jsons = await content.ReadAsStringAsync();
+                ProblemDetails problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(jsons);
+                string detail = problemDetails.Detail;
+                data.Add("seconds", detail);
+                await Clients.Caller.SendAsync("WaitingTrack", detail);
+            }
+            else
+            {
+                await Clients.Group(roomname).SendAsync("ReceiveTrack", json);
+
+            }
+            //TODO IF SUCCEDED BLA BLA BLA
             Debug.WriteLine($"sended{json}");
-            await Clients.Group(roomname).SendAsync("ReceiveTrack", json);
+            
         }
         private string GetNickName(string email)
         {

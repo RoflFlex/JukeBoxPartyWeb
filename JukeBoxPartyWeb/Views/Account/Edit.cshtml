@@ -66,7 +66,10 @@
                     @Html.DisplayFor(modelItem => modelItem.User.AccessFailedCount)
                 </p>
             </div>
-            @ViewBag.Message
+            <span class="text-success">
+                @ViewBag.Message
+            </span>
+            
 
             <span class="text-danger">
                 @ViewBag.ErrorMessage

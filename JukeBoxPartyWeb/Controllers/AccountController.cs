@@ -160,7 +160,7 @@ namespace JukeBoxPartyWeb.Controllers
                     }
 
                     await userManager.AddToRoleAsync(user, role.Name);
-                    await signInManager.RefreshSignInAsync(user);
+                   // await signInManager.RefreshSignInAsync(user);
 
                     foreach (PropertyInfo prop in user.GetType().GetProperties())
                     {
