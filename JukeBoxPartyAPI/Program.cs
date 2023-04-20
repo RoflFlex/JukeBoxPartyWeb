@@ -10,23 +10,23 @@ builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 // Add services to the container.
-builder.Services.AddCors(o => o.AddPolicy(name: MyAllowSpecificOrigins, policy => {
+/*builder.Services.AddCors(o => o.AddPolicy(name: MyAllowSpecificOrigins, policy => {
     policy
     .AllowAnyMethod()
     .AllowAnyHeader()
     .SetIsOriginAllowed(origin => true)
     .AllowCredentials()
     .WithOrigins("http://145.44.235.126/",
-    "https://145.44.235.126/");
+    "https://145.44.235.126");
 }));
-
+*/
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("DbConnection");
 builder.Services.AddDbContext<MyDbContext>(x => x.UseLazyLoadingProxies().UseSqlServer(connectionString));
 
 var app = builder.Build();
