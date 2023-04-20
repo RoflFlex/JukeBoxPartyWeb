@@ -5,7 +5,7 @@ let users;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const roomName = urlParams.get('id');
-const baseurl = "http://jukeboxparty.hbo-ict.org/api/";
+const baseurl = "https://jukeboxparty.hbo-ict.org/api/";
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
