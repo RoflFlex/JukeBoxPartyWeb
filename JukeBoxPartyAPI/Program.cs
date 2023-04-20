@@ -25,7 +25,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-var connectionString = builder.Configuration.GetConnectionString("DbConnection");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MyDbContext>(x => x.UseLazyLoadingProxies().UseSqlServer(connectionString));
 
 var app = builder.Build();
