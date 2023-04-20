@@ -5,7 +5,7 @@ let users;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const roomName = urlParams.get('id');
-const baseurl = "http://localhost:5003/api/";
+const baseurl = "http://145.44.235.126:5003/api/";
 //songs = await getTracks();
 
 var connection = new signalR.HubConnectionBuilder()
