@@ -10,6 +10,8 @@ using JukeBoxPartyAPI.Models;
 using System.Net;
 using Newtonsoft.Json;
 using System.Text;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace JukeBoxPartyAPI.Controllers
 {
@@ -17,126 +19,118 @@ namespace JukeBoxPartyAPI.Controllers
     [ApiController]
     public class QueueElementsController : ControllerBase
     {
-        private readonly MyDbContext _context;
-        private readonly double _interval = 90.0;
-        public QueueElementsController(MyDbContext context)
+        private readonly IQueueElementsRepository _queueElementRepository;
+    
+        public QueueElementsController(IQueueElementsRepository queueElementRepository)
         {
-            _context = context;
+            _queueElementRepository = queueElementRepository;
         }
+        /* public QueueElementsController()
+     {
+         _queueElementRepository = new QueueElementRepository(new MyDbContext());
+     }*/
 
         // GET: api/QueueElements
         [HttpGet]
         public async Task<ActionResult<IEnumerable<QueueElement>>> GetQueueElements()
         {
-          if (_context.QueueElements == null)
-          {
-              return NotFound();
-          }
-            return await _context.QueueElements.ToListAsync();
+            List<QueueElement> queueElements;
+            try
+            {
+                queueElements = await _queueElementRepository.GetAllElements();
+            }
+            catch
+            {
+                return NotFound();
+            }
+            if(queueElements == null)
+            {
+                return NotFound();
+            }
+            return queueElements;
         }
 
         // GET: api/QueueElements/5
         [HttpGet("{id}")]
         public async Task<ActionResult<QueueElement>> GetQueueElement(int id)
         {
-          if (_context.QueueElements == null)
-          {
-              return NotFound();
-          }
-            var queueElement = await _context.QueueElements.FindAsync(id);
-
-            if (queueElement == null)
+            try
+            {
+                var element =  await _queueElementRepository.GetElementById(id);
+                if(element == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return element;
+                }
+                
+            }
+            catch
             {
                 return NotFound();
             }
-
-            return queueElement;
         }
 
         [HttpGet("Lobby/{id}")]
         public async Task<ActionResult<List<QueueElement>>> GetOpenSongs(Guid id)
         {
-            if (_context.QueueElements == null)
-            {
-                return NotFound();
-            }
-            var queueElementList = await _context.QueueElements.ToListAsync();
-
-            var queueElements = queueElementList.FindAll(element => element.LobbyId == id && element.PlayedAt == null);
-            if(queueElementList.FindLast(element => element.LobbyId == id && element.PlayedAt.HasValue) != null){
-                var queueElWithPlayedAt = queueElementList.FindLast(element => element.LobbyId == id && element.PlayedAt.HasValue);
-
-                TimeSpan span = (TimeSpan)(DateTime.Now - queueElWithPlayedAt.PlayedAt);
-
-                double ms = (double)span.TotalMilliseconds;
-                if (ms < queueElWithPlayedAt.Song.Duration)
-
-                queueElements.Insert(0, queueElementList.FindLast(element => element.LobbyId == id && element.PlayedAt.HasValue));
-            }
-            if (queueElements.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return queueElements;
-        }
-
-        // PUT: api/QueueElements/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutQueueElement(int id, QueueElement queueElement)
-        {
-            if (id != queueElement.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(queueElement).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                return await _queueElementRepository.GetOpenElementsOfLobby(id);
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!QueueElementExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
-
-            return NoContent();
         }
+
+        //// PUT: api/QueueElements/5
+        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutQueueElement(int id, QueueElement queueElement)
+        //{
+        //    if (id != queueElement.Id)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    _context.Entry(queueElement).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!QueueElementExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return NoContent();
+        //}
 
         [HttpPut("Play/{id}")]
         public async Task<IActionResult> Play(int id)
         {
-           
-            var queueElement = await _context.QueueElements.FindAsync(id);
-            queueElement.PlayedAt = DateTime.Now;
-            _context.Entry(queueElement).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                if (await _queueElementRepository.PlayQueueElement(id))
+                return Ok();
+                return BadRequest();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!QueueElementExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-
-            return NoContent();
         }
 
         // POST: api/QueueElements
@@ -144,61 +138,30 @@ namespace JukeBoxPartyAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<QueueElement>> PostQueueElement(PostQueueElement queueElement)
         {
-            if (_context.QueueElements == null)
+            try
             {
-                return Problem("Entity set 'MyDbContext.QueueElements'  is null.");
+                var element = await _queueElementRepository.CreateQueueElement(queueElement);
+                return CreatedAtAction("GetQueueElement", new { id = element.Id }, element);
             }
-            Song? song = await _context.Songs.FindAsync(queueElement.SongId);
-            Lobby? lobby = await _context.Lobbies.FindAsync(queueElement.LobbyId);
-            if (song == null || lobby == null)
+            catch(TimeoutException e)
             {
-                //song = await _context.Songs.LastAsync();
-                return BadRequest();
-            }
-            
-
-                var lastAddedQueueElement = _context.QueueElements.Where(q => q.UserId == queueElement.UserId).OrderBy(q => q.AddedAt).ToList().LastOrDefault();
-
-            if (lastAddedQueueElement == null || GetDifferenceInSeconds(lastAddedQueueElement.AddedAt,DateTime.Now) >= _interval) 
+                if (e.Data.Contains("ProblemDetails"))
                 {
-                    QueueElement element = new QueueElement()
-                    {
-                        AddedAt = DateTime.Now,
-                        Lobby = lobby,
-                        Song = song,
-                        UserId = queueElement.UserId,
-                        LobbyId = queueElement.LobbyId,
-                        SongId = queueElement.SongId
-                    };
-                    _context.QueueElements.Add(element);
-                    await _context.SaveChangesAsync();
-
-                    return CreatedAtAction("GetQueueElement", new { id = element.Id }, element);
-                }
-                else
-                {
-                /* var response = new HttpResponseMessage(HttpStatusCode.NotImplemented);
-                 var data = new { Seconds = GetDifferenceInSeconds(lastAddedQueueElement.AddedAt,DateTime.Now)};
-                 var json = JsonConvert.SerializeObject(data);
-                 response.Content = new StringContent(json, Encoding.UTF8, "application/json");*/
-                double difference = _interval - GetDifferenceInSeconds(lastAddedQueueElement.AddedAt, DateTime.Now);
-                    var problemDetails = new ProblemDetails
-                    {
-                        Status = 400,
-                        Title = "Invalid request",
-                        Detail = difference.ToString()
-                    };
+                    var problemDetails = e.Data["ProblemDetails"] as ProblemDetails;
                     return BadRequest(problemDetails);
                 }
-            
-          
-           
+                return BadRequest();
+            }
+            catch
+            {
+                return BadRequest();
+            }           
         }
 
 
 
 
-        // DELETE: api/QueueElements/5
+        /*// DELETE: api/QueueElements/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQueueElement(int id)
         {
@@ -216,8 +179,8 @@ namespace JukeBoxPartyAPI.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-        [NonAction]
+        }*/
+        /*[NonAction]
         private bool QueueElementExists(int id)
         {
             return (_context.QueueElements?.Any(e => e.Id == id)).GetValueOrDefault();
@@ -228,7 +191,7 @@ namespace JukeBoxPartyAPI.Controllers
             TimeSpan difference = date2 - date1;
             double seconds = difference.TotalSeconds;
             return seconds;
-        }
+        }*/
 
     }
 }

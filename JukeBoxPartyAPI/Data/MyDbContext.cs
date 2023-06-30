@@ -8,6 +8,9 @@ namespace JukeBoxPartyAPI.Data
         public MyDbContext(DbContextOptions options) : base(options)
         {
         }
+        /*public MyDbContext() : base()
+        {
+        }*/
 
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Song> Songs { get; set; }

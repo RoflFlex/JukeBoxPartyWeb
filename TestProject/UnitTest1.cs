@@ -1,4 +1,5 @@
 using JukeBoxPartyWeb.Controllers;
+using JukeBoxPartyWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography.X509Certificates;
 
@@ -16,6 +17,8 @@ namespace TestProject
                 Assert.IsType<ViewResult>(result);
             }
         }
+
         
+
     }
 }
