@@ -5,67 +5,66 @@
 }
 <link href="~/css/lobby.css" rel="stylesheet" />
 <div>
-    <div class="overview">
-        <div class="overview-song">
-            <div class="overview-track_current">
-                <h3>The current track: </h3>
-                <p id="currenttrack">Not selected yet</p>
-            </div>
-            <div class="overview-song-owner responsive">
-                <img src="~/media/gifs/cd.gif" class="track-image" style="height: auto;
+	<div class="overview">
+		<div class="overview-song">
+			<div class="overview-track_current">
+				<h3>The current track: </h3>
+				<p id="currenttrack">Not selected yet</p>
+			</div>
+			<div class="overview-song-owner responsive">
+				<img src="~/media/gifs/cd.gif" class="track-image" style="height: auto;
     width: 100%;" />
-                <audio autoplay id="audio">
-                </audio>
-            </div>
+				<audio autoplay id="audio">
+				</audio>
+			</div>
 
-            <div class="overview-track_current">
-                <h3>The next track:</h3>
-                <p id="nexttrack">Not selected yet</p>
-                <button>
-                    Queue
-                </button>
-                <button id="addTrackBtn">
-                    + add track
-                </button>
-            </div>
-        </div>
-        <div class="overview-features">
-            <div id="usercards" class="overview-usercards">
+			<div class="overview-track_current">
+				<h3>The next track:</h3>
+				<p id="nexttrack">Not selected yet</p>
+				<button class="btn btn-secondary">
+					Queue
+				</button>
+				<button id="addTrackBtn" class="btn btn-secondary">
+					+ add track
+				</button>
+			</div>
+		</div>
+		<div class="overview-features">
+			<div id="usercards" class="overview-usercards">
+			</div>
+			<div class="tracks-query">
+				<h4>
+					Wachtrij
+				</h4>
+				<ol id="playlist">
+				</ol>
+			</div>
+			<div class="tracks-collection">
+				<h4>
+					Tracklist
+				</h4>
 
-            </div>
-            <div class="tracks-query">
-                <h4>
-                    Wachtrij
-                </h4>
-                <ol id="playlist">
-                </ol>
-            </div>
-            <div class="tracks-collection">
-                <h4>
-                    Tracklist
-                </h4>
-                
-                    <ul id="tracklist">
-                    </ul>
-                
-                <span id="seconds" class="text-danger"></span>
-                <button id="select">Select</button>
-            </div>
-            <div id="chatbox" class="overview-features-chatbox">
-                <h4>
-                    Chatbox:
-                </h4>
-                <ul id="messagesList"></ul>
-                 <form class ="chatbox-input">
-                    <input type="text" id="messageInput" />
-                    <input type="submit" id="sendButton" value="Send" />
-                 </form>
-                 
-        </div>
-    </div>
+				<ul id="tracklist">
+				</ul>
+
+				<span id="seconds" class="text-danger"></span>
+				<button id="select" class="btn btn-primary">Select</button>
+			</div>
+			<div id="chatbox" class="overview-features-chatbox">
+				<h4>
+					Chatbox:
+				</h4>
+				<ul id="messagesList"></ul>
+				<form class="chatbox-input">
+					<input type="text" id="messageInput" />
+					<input type="submit" id="sendButton" class="btn btn-primary" value="Send" />
+				</form>
+
+			</div>
+		</div>
 
 
-</div>
-<script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/lobby.js"></script>
-<script src="~/js/usercard.js"></script>
+	</div>
+	<script src="~/js/signalr/dist/browser/signalr.js"></script>
+	<script src="~/js/lobby.js"></script>
+	<script src="~/js/usercard.js"></script>

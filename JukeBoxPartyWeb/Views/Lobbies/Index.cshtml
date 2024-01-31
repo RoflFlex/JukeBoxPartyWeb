@@ -4,10 +4,13 @@
 *@
 @{
 }
+<div class="d-flex flex-column">
+
 @foreach (var item in Model)
 {
-        <a asp-action="Lobby" asp-route-id="@item.Id">
+        <a asp-action="Lobby" asp-route-id="@item.Id" class="mt-2">
  
             <button asp-action="Lobby" class="w-100 btn btn-lg btn-primary lobby_btn" asp-route-id="@item.Id">Lobby #@item.IdToShow</button>
         </a>
-}
+    }
+</div>
