@@ -100,10 +100,6 @@ namespace JukeBoxPartyAPI.Data
 
                     queueElements.Insert(0, queueElementList.FindLast(element => element.LobbyId == lobbyID && element.PlayedAt.HasValue));
             }
-            if (queueElements.Count == 0)
-            {
-                throw new NullReferenceException("QueueElements are not found");
-            }
 
             return queueElements;
         }
